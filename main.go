@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"reflect"
+	"runtime"
 	"sort"
 	"strings"
 )
@@ -21,8 +23,17 @@ func NormalizeName(name string) string {
 	return name
 }
 
+func GetFunctionName(i interface{}) string {
+	// https://stackoverflow.com/a/7053871/5958455
+	return runtime.FuncForPC(reflect.ValueOf(i).Pointer()).Name()
+}
+
 func RegisterSolution(name string, f SolutionFunc) {
-	registry[NormalizeName(name)] = f
+	name = NormalizeName(name)
+	if f, ok := registry[name]; ok {
+		panic(fmt.Sprintf("Solution %s already registered as %s", name, GetFunctionName(f)))
+	}
+	registry[name] = f
 }
 
 func Usage() {
@@ -51,6 +62,7 @@ func main() {
 	fn, ok := registry[solution]
 	if !ok {
 		Usage()
+		fmt.Fprintf(os.Stderr, "Unknown solution: %s\n", solution)
 		os.Exit(1)
 	}
 	rs := []io.Reader{}
