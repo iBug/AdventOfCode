@@ -14,7 +14,7 @@ func (c Coord) String() string {
 	return strconv.Itoa(c.x) + "," + strconv.Itoa(c.y)
 }
 
-func Abs(x int) int {
+func Abs[T int](x T) T {
 	if x < 0 {
 		return -x
 	}
