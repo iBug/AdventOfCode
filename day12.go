@@ -9,8 +9,8 @@ import (
 )
 
 func init() {
-	RegisterSolution("12-1", Solution12_1)
-	// RegisterSolution("12-2", Solution12_2)
+	RegisterSolution("12-1", func(r io.Reader) { Solution12(r, 1) })
+	RegisterSolution("12-2", func(r io.Reader) { Solution12(r, 2) })
 }
 
 type Coord struct {
@@ -21,7 +21,7 @@ func (c Coord) Equal(o Coord) bool {
 	return c.x == o.x && c.y == o.y
 }
 
-func Solution12_1(r io.Reader) {
+func Solution12(r io.Reader, mode int) {
 	h := make([][]int, 0)
 	var s, e Coord
 	d := make([][]int, 0)
@@ -47,12 +47,15 @@ func Solution12_1(r io.Reader) {
 		d = append(d, make([]int, len(str)))
 	}
 
-	q = append(q, s)
+	q = append(q, e)
 	for len(q) > 0 {
 		c := q[0]
 		dist := d[c.y][c.x]
 		q = q[1:]
-		if c.Equal(e) {
+		if mode == 1 && c.Equal(s) {
+			fmt.Println(dist)
+			break
+		} else if mode == 2 && h[c.y][c.x] == 0 {
 			fmt.Println(dist)
 			break
 		}
@@ -64,7 +67,7 @@ func Solution12_1(r io.Reader) {
 			{c.x + 1, c.y},
 		} {
 			if n.x >= 0 && n.x < len(h[0]) && n.y >= 0 && n.y < len(h) && d[n.y][n.x] == 0 {
-				if h[n.y][n.x]-h[c.y][c.x] <= 1 {
+				if h[n.y][n.x]-h[c.y][c.x] >= -1 {
 					d[n.y][n.x] = dist + 1
 					q = append(q, n)
 				}
