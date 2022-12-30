@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"sort"
 	"strings"
 )
 
@@ -39,44 +40,30 @@ func Recurse16_1(v map[string]Valve16, d map[string]int, node string, time int, 
 	return thisValue + maxNext
 }
 
-func Recurse16_2(v map[string]Valve16, d map[string]int, node string, time int, visited, remaining []string) int {
-	thisValue := v[node].flow * time
+func Recurse16_2(v map[string]Valve16, d map[string]int, node string, time, value int, remaining, visited []string, resultMap map[string]int) {
+	value += v[node].flow * time
 	visited = append(visited, node)
+
 	next := make([]string, 0, 16)
 	for _, c := range remaining {
 		if d[node+c] < time {
 			next = append(next, c)
 		}
 	}
-	maxNext := 0
 	for i, c := range next {
 		newNext := make([]string, 0, len(next)-1)
 		newNext = append(newNext, next[:i]...)
 		newNext = append(newNext, next[i+1:]...)
 
-		nextValue := Recurse16_2(v, d, c, time-d[node+c], visited, newNext)
-		if nextValue > maxNext {
-			maxNext = nextValue
-		}
+		Recurse16_2(v, d, c, time-d[node+c], value, newNext, visited, resultMap)
 	}
 
-	if maxNext == 0 {
-		next := make([]string, 0, 16)
-		for c := range v {
-			found := false
-			for _, v := range visited {
-				if c == v {
-					found = true
-					break
-				}
-			}
-			if !found {
-				next = append(next, c)
-			}
-		}
-		maxNext = Recurse16_1(v, d, "AA", 26, next)
+	visited2 := make([]string, len(visited))
+	copy(visited2, visited)
+	sort.Strings(visited2)
+	if resultMap[strings.Join(visited2, ",")] < value {
+		resultMap[strings.Join(visited2, ",")] = value
 	}
-	return thisValue + maxNext
 }
 
 func Solution16(r io.Reader, mode int) {
@@ -128,6 +115,27 @@ func Solution16(r io.Reader, mode int) {
 	if mode == 1 {
 		fmt.Println(Recurse16_1(v, d, "AA", 30, allValves))
 	} else if mode == 2 {
-		fmt.Println(Recurse16_2(v, d, "AA", 26, make([]string, 0, 16), allValves))
+		m := make(map[string]int)
+		Recurse16_2(v, d, "AA", 26, 0, allValves, make([]string, 0, 16), m)
+		max := 0
+		for res1 := range m {
+		res2:
+			for res2 := range m {
+				for _, part := range strings.Split(res1, ",") {
+					if part != "AA" && strings.Contains(res2, part) {
+						continue res2
+					}
+				}
+				if m[res1]+m[res2] > max {
+					max = m[res1] + m[res2]
+				}
+			}
+		}
+		for _, value := range m {
+			if value > max {
+				max = value
+			}
+		}
+		fmt.Println(max)
 	}
 }
