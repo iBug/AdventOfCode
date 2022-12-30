@@ -10,11 +10,22 @@ import (
 )
 
 func init() {
-	RegisterSolution("11-1", Solution11_1)
-	// RegisterSolution("11-2", Solution11_2)
+	RegisterSolution("11-1", func(r io.Reader) { Solution11(r, 1, 20) })
+	RegisterSolution("11-2", func(r io.Reader) { Solution11(r, 2, 10000) })
 }
 
-func Solution11_1(r io.Reader) {
+func Gcd(a, b int) int {
+	for b != 0 {
+		a, b = b, a%b
+	}
+	return a
+}
+
+func Lcm(a, b int) int {
+	return a * b / Gcd(a, b)
+}
+
+func Solution11(r io.Reader, mode, roundsN int) {
 	type Monkey struct {
 		items []int
 		op    byte
@@ -60,7 +71,12 @@ func Solution11_1(r io.Reader) {
 		}
 	}
 
-	roundsN := 20
+	// reuse n as modulo
+	n = Lcm(m[0].div, m[1].div)
+	for i := 2; i < len(m); i++ {
+		n = Lcm(n, m[i].div)
+	}
+
 	for i := 0; i < roundsN; i++ {
 		for j := 0; j < len(m); j++ {
 			m[j].count += len(m[j].items)
@@ -79,7 +95,11 @@ func Solution11_1(r io.Reader) {
 						item *= m[j].opVal
 					}
 				}
-				item /= 3
+				if mode == 1 {
+					item /= 3
+				} else if mode == 2 {
+					item %= n
+				}
 
 				target := m[j].ifF
 				if item%m[j].div == 0 {
