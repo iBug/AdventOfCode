@@ -9,11 +9,23 @@ import (
 )
 
 func init() {
-	RegisterSolution("5-1", Solution5_1)
-	// RegisterSolution("5-2", Solution5_2)
+	RegisterSolution("5-1", func(r io.Reader) { Solution5(r, Move5_1) })
+	RegisterSolution("5-2", func(r io.Reader) { Solution5(r, Move5_2) })
 }
 
-func Solution5_1(r io.Reader) {
+func Move5_1(stacks [][]byte, count, from, to int) {
+	for i := 0; i < count; i++ {
+		stacks[to] = append(stacks[to], stacks[from][len(stacks[from])-1])
+		stacks[from] = stacks[from][:len(stacks[from])-1]
+	}
+}
+
+func Move5_2(stacks [][]byte, count, from, to int) {
+	stacks[to] = append(stacks[to], stacks[from][len(stacks[from])-count:]...)
+	stacks[from] = stacks[from][:len(stacks[from])-count]
+}
+
+func Solution5(r io.Reader, moveFunc func([][]byte, int, int, int)) {
 	scanner := bufio.NewScanner(r)
 	stacks_s := make([]string, 0)
 	n := 0
@@ -43,10 +55,7 @@ func Solution5_1(r io.Reader) {
 		fmt.Sscanf(scanner.Text(), "move %d from %d to %d", &count, &from, &to)
 		from--
 		to--
-		for i := 0; i < count; i++ {
-			stacks[to] = append(stacks[to], stacks[from][len(stacks[from])-1])
-			stacks[from] = stacks[from][:len(stacks[from])-1]
-		}
+		moveFunc(stacks, count, from, to)
 	}
 
 	for i := 0; i < n; i++ {
