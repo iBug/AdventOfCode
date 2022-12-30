@@ -44,7 +44,7 @@ func Usage() {
 	sort.Strings(solutions)
 
 	w := flag.CommandLine.Output()
-	fmt.Fprintf(w, "Usage of %s: [options] solution [input...]\n", os.Args[0])
+	fmt.Fprintf(w, "Usage: %s <solution> [input...]\n", os.Args[0])
 	fmt.Fprintf(w, "Available solutions:\n")
 	for _, name := range solutions {
 		fmt.Fprintf(w, "\t%s\n", name)
