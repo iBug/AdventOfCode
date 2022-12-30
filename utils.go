@@ -1,6 +1,6 @@
 package main
 
-import "fmt"
+import "strconv"
 
 type Coord struct {
 	x, y int
@@ -11,10 +11,10 @@ func (c Coord) Equal(o Coord) bool {
 }
 
 func (c Coord) String() string {
-	return fmt.Sprintf("%d,%d", c.x, c.y)
+	return strconv.Itoa(c.x) + "," + strconv.Itoa(c.y)
 }
 
-func Abs[T int](x T) T {
+func Abs(x int) int {
 	if x < 0 {
 		return -x
 	}
