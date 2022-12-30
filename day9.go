@@ -10,7 +10,8 @@ import (
 
 func init() {
 	RegisterSolution("9-1", Solution9_1)
-	RegisterSolution("9-2", Solution9_2)
+	RegisterSolution("9-1a", func(r io.Reader) { Solution9(r, 2) })
+	RegisterSolution("9-2", func(r io.Reader) { Solution9(r, 10) })
 }
 
 func Solution9_1(r io.Reader) {
@@ -92,9 +93,8 @@ func Move9(x1, y1, x2, y2 int) (int, int) {
 	return x2, y2
 }
 
-func Solution9_2(r io.Reader) {
+func Solution9(r io.Reader, size int) {
 	scanner := bufio.NewScanner(r)
-	size := 10
 	x, y := make([]int, size), make([]int, size)
 	visited := make(map[string]int)
 	visited["0,0"] = 1
