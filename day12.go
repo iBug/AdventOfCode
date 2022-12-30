@@ -13,14 +13,6 @@ func init() {
 	RegisterSolution("12-2", func(r io.Reader) { Solution12(r, 2) })
 }
 
-type Coord struct {
-	x, y int
-}
-
-func (c Coord) Equal(o Coord) bool {
-	return c.x == o.x && c.y == o.y
-}
-
 func Solution12(r io.Reader, mode int) {
 	h := make([][]int, 0)
 	var s, e Coord
