@@ -13,3 +13,10 @@ func (c Coord) Equal(o Coord) bool {
 func (c Coord) String() string {
 	return fmt.Sprintf("%d,%d", c.x, c.y)
 }
+
+func Abs[T int](x T) T {
+	if x < 0 {
+		return -x
+	}
+	return x
+}
