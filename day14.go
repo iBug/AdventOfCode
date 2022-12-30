@@ -8,8 +8,8 @@ import (
 )
 
 func init() {
-	RegisterSolution("14-1", Solution14_1)
-	// RegisterSolution("14-2", Solution14_2)
+	RegisterSolution("14-1", func(r io.Reader) { Solution14(r, 1) })
+	RegisterSolution("14-2", func(r io.Reader) { Solution14(r, 2) })
 }
 
 const (
@@ -18,7 +18,7 @@ const (
 	E14_SAND
 )
 
-func Solution14_1(r io.Reader) {
+func Solution14(r io.Reader, mode int) {
 	m := make(map[string]int)
 	maxY := 0
 
@@ -66,10 +66,18 @@ func Solution14_1(r io.Reader) {
 outer:
 	for {
 		s := Coord{500, 0}
+		if mode == 2 && m[s.String()] == E14_SAND {
+			break
+		}
 	inner:
 		for {
 			if s.y >= maxY {
-				break outer
+				if mode == 1 {
+					break outer
+				} else if mode == 2 {
+					m[s.String()] = E14_SAND
+					break inner
+				}
 			}
 			for _, n := range []Coord{
 				{s.x, s.y + 1},

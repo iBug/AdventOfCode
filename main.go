@@ -69,7 +69,7 @@ func main() {
 	for _, path := range flag.Args()[1:] {
 		f, err := os.Open(path)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Cannot open %s: %v", path, err)
+			fmt.Fprintf(os.Stderr, "Cannot open %s: %v\n", path, err)
 			os.Exit(1)
 		}
 		defer f.Close()
