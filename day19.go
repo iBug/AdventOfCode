@@ -10,7 +10,7 @@ import (
 
 func init() {
 	RegisterSolution("19-1", Solution19_1)
-	// RegisterSolution("19-2", Solution19_2)
+	RegisterSolution("19-2", Solution19_2)
 }
 
 type Blueprint19 struct {
@@ -99,7 +99,7 @@ func TimeToNextGeodeBot19(bp Blueprint19, count Resource19, bots Resource19) int
 	return Max((oreNeeded+bots.ore-1)/bots.ore, (obsidianNeeded+bots.obsidian-1)/bots.obsidian)
 }
 
-func Recurse19_1(minutes int, bp Blueprint19, count Resource19, bots Resource19) int {
+func Recurse19(minutes int, bp Blueprint19, count Resource19, bots Resource19) int {
 	if minutes == 0 {
 		return count.geode
 	}
@@ -127,7 +127,7 @@ func Recurse19_1(minutes int, bp Blueprint19, count Resource19, bots Resource19)
 		newCount.ore -= bp.geode
 		newCount.obsidian -= bp.geode2
 
-		newResult := Recurse19_1(minutes-timeNeeded-1, bp, newCount.Add(bots), bots.Add(Resource19{0, 0, 0, 1}))
+		newResult := Recurse19(minutes-timeNeeded-1, bp, newCount.Add(bots), bots.Add(Resource19{0, 0, 0, 1}))
 		if newResult > maxGeodeCount {
 			maxGeodeCount = newResult
 		}
@@ -143,7 +143,7 @@ func Recurse19_1(minutes int, bp Blueprint19, count Resource19, bots Resource19)
 		newCount.ore -= bp.obsidian
 		newCount.clay -= bp.obsidian2
 
-		newResult := Recurse19_1(minutes-timeNeeded-1, bp, newCount.Add(bots), bots.Add(Resource19{0, 0, 1, 0}))
+		newResult := Recurse19(minutes-timeNeeded-1, bp, newCount.Add(bots), bots.Add(Resource19{0, 0, 1, 0}))
 		if newResult > maxGeodeCount {
 			maxGeodeCount = newResult
 		}
@@ -158,7 +158,7 @@ func Recurse19_1(minutes int, bp Blueprint19, count Resource19, bots Resource19)
 		}
 		newCount.ore -= bp.clay
 
-		newResult := Recurse19_1(minutes-timeNeeded-1, bp, newCount.Add(bots), bots.Add(Resource19{0, 1, 0, 0}))
+		newResult := Recurse19(minutes-timeNeeded-1, bp, newCount.Add(bots), bots.Add(Resource19{0, 1, 0, 0}))
 		if newResult > maxGeodeCount {
 			maxGeodeCount = newResult
 		}
@@ -173,7 +173,7 @@ func Recurse19_1(minutes int, bp Blueprint19, count Resource19, bots Resource19)
 		}
 		newCount.ore -= bp.ore
 
-		newResult := Recurse19_1(minutes-timeNeeded-1, bp, newCount.Add(bots), bots.Add(Resource19{1, 0, 0, 0}))
+		newResult := Recurse19(minutes-timeNeeded-1, bp, newCount.Add(bots), bots.Add(Resource19{1, 0, 0, 0}))
 		if newResult > maxGeodeCount {
 			maxGeodeCount = newResult
 		}
@@ -182,24 +182,42 @@ func Recurse19_1(minutes int, bp Blueprint19, count Resource19, bots Resource19)
 	return maxGeodeCount
 }
 
+func ParseBlueprint19(line string) (blueprintId int, bp Blueprint19) {
+	f := strings.Fields(line)
+	blueprintId, _ = strconv.Atoi(strings.TrimSuffix(f[1], ":"))
+	bp.ore, _ = strconv.Atoi(f[6])
+	bp.clay, _ = strconv.Atoi(f[12])
+	bp.obsidian, _ = strconv.Atoi(f[18])
+	bp.obsidian2, _ = strconv.Atoi(f[21])
+	bp.geode, _ = strconv.Atoi(f[27])
+	bp.geode2, _ = strconv.Atoi(f[30])
+	bp.getMaxOreCost()
+	return
+}
+
 func Solution19_1(r io.Reader) {
 	scanner := bufio.NewScanner(r)
 	total := 0
 	for scanner.Scan() {
-		f := strings.Fields(scanner.Text())
-		blueprintId, _ := strconv.Atoi(strings.TrimSuffix(f[1], ":"))
-		var bp Blueprint19
-		bp.ore, _ = strconv.Atoi(f[6])
-		bp.clay, _ = strconv.Atoi(f[12])
-		bp.obsidian, _ = strconv.Atoi(f[18])
-		bp.obsidian2, _ = strconv.Atoi(f[21])
-		bp.geode, _ = strconv.Atoi(f[27])
-		bp.geode2, _ = strconv.Atoi(f[30])
-		bp.getMaxOreCost()
-
-		result := Recurse19_1(24, bp, Resource19{0, 0, 0, 0}, Resource19{1, 0, 0, 0})
+		blueprintId, bp := ParseBlueprint19(scanner.Text())
+		result := Recurse19(24, bp, Resource19{0, 0, 0, 0}, Resource19{1, 0, 0, 0})
 		// fmt.Printf("Blueprint %d %v: %d\n", blueprintId, bp, result)
 		total += blueprintId * result
+	}
+	fmt.Println(total)
+}
+
+func Solution19_2(r io.Reader) {
+	scanner := bufio.NewScanner(r)
+	total := 1
+	for scanner.Scan() {
+		blueprintId, bp := ParseBlueprint19(scanner.Text())
+		result := Recurse19(32, bp, Resource19{0, 0, 0, 0}, Resource19{1, 0, 0, 0})
+		// fmt.Printf("Blueprint %d %v: %d\n", blueprintId, bp, result)
+		total *= result
+		if blueprintId == 3 {
+			break
+		}
 	}
 	fmt.Println(total)
 }
