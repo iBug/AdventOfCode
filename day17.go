@@ -7,8 +7,8 @@ import (
 )
 
 func init() {
-	RegisterSolution("17-1", Solution17_1)
-	// RegisterSolution("17-2", Solution17_2)
+	RegisterSolution("17-1", func(r io.Reader) { Solution17(r, 1) })
+	RegisterSolution("17-2", func(r io.Reader) { Solution17(r, 2) })
 }
 
 type Rock17 struct {
@@ -29,7 +29,7 @@ var rocks17 = []Rock17{
 	{w: 2, h: 2, s: []Coord{{0, 0}, {1, 0}, {0, 1}, {1, 1}}},
 }
 
-func Solution17_1(r io.Reader) {
+func Solution17(r io.Reader, mode int) {
 	scanner := bufio.NewScanner(r)
 	scanner.Scan()
 	jets := make([]int, len(scanner.Text()))
@@ -44,7 +44,25 @@ func Solution17_1(r io.Reader) {
 	m := make([][7]int, 3)
 	top := -1
 	tick := 0
-	for n := 0; n < 2022; n++ {
+
+	// for part2
+	tops := make([]int, 0)
+	sampleN := 20
+	sampleInterval := 1000
+
+	for n := 0; ; n++ {
+		if mode == 1 && n >= 2022 {
+			fmt.Println(top + 1)
+			break
+		} else if mode == 2 {
+			if n%sampleInterval == 0 {
+				tops = append(tops, top+1)
+				if len(tops) >= sampleN {
+					break
+				}
+			}
+		}
+
 		rock := rocks17[n%len(rocks17)]
 		r := Coord{2, top + rock.h + 3}
 		for len(m) <= r.y {
@@ -102,5 +120,31 @@ func Solution17_1(r io.Reader) {
 			}
 		}
 	}
-	fmt.Println(top + 1)
+
+	if mode == 2 {
+		interval := 0
+		ok := true
+		for interval = 1; interval < len(tops)-1; interval++ {
+			diff := tops[1+interval] - tops[1]
+			ok = true
+			for i := 2; i < len(tops)-interval; i++ {
+				if tops[i]+diff != tops[i+interval] {
+					ok = false
+					break
+				}
+			}
+			if ok {
+				target := int(1000000000000 / int64(sampleInterval))
+				rem := target % interval
+				if rem == 0 {
+					rem = interval
+				}
+				fmt.Println(tops[rem] + (target/interval)*diff)
+				break
+			}
+		}
+		if !ok {
+			fmt.Printf("No pattern found, perhaps the sample interval %d is too small?\n", sampleInterval)
+		}
+	}
 }
