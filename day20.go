@@ -65,14 +65,19 @@ func PrintList20(n *Node20, count int) {
 }
 
 func Solution20(r io.Reader, mode int) {
+	mixTimes := 1
+	multiplyVBy := int64(1)
+	if mode == 2 {
+		mixTimes = 10
+		multiplyVBy = MAGIC_KEY_20
+	}
+
 	scanner := bufio.NewScanner(r)
 	n := make([]*Node20, 0, 5000)
 	zeroPos := 0
 	for scanner.Scan() {
 		v, _ := strconv.ParseInt(scanner.Text(), 10, 64)
-		if mode == 2 {
-			v *= MAGIC_KEY_20
-		}
+		v *= multiplyVBy
 		n = append(n, &Node20{v: v})
 		if v == 0 {
 			zeroPos = len(n) - 1
@@ -86,10 +91,6 @@ func Solution20(r io.Reader, mode int) {
 		n[i+1].prev = n[i]
 	}
 
-	mixTimes := 1
-	if mode == 2 {
-		mixTimes = 10
-	}
 	for i := 0; i < mixTimes; i++ {
 		MixList20(n)
 	}
