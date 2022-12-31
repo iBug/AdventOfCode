@@ -40,3 +40,12 @@ func Abs[T int](x T) T {
 	}
 	return x
 }
+
+func Max[T int](x T, xs ...T) T {
+	for _, y := range xs {
+		if y > x {
+			x = y
+		}
+	}
+	return x
+}
