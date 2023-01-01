@@ -49,6 +49,21 @@ func HasBlizzardAtRound24(m [][]int, size Coord, round int, c Coord) bool {
 	return false
 }
 
+var (
+	D24_UP    = Coord{0, -1}
+	D24_DOWN  = Coord{0, 1}
+	D24_LEFT  = Coord{-1, 0}
+	D24_RIGHT = Coord{1, 0}
+	D24_STAY  = Coord{0, 0}
+)
+
+func TryMove24(m [][]int, size Coord, s State24, c Coord) (State24, bool) {
+	if !HasBlizzardAtRound24(m, size, s.round, s.Coord.Add(c)) {
+		return State24{s.Coord.Add(c), s.round}, true
+	}
+	return s, false
+}
+
 func Solution24(r io.Reader) {
 	scanner := bufio.NewScanner(r)
 	m := make([][]int, 0)
@@ -116,43 +131,46 @@ func Solution24(r io.Reader) {
 		}
 
 		if head.y < 0 {
-			if !HasBlizzardAtRound24(m, size, head.round, head.Coord.Add(Coord{0, 1})) {
-				queue = append(queue, State24{Coord{head.x, head.y + 1}, head.round})
+			if s, ok := TryMove24(m, size, head, D24_DOWN); ok {
+				queue = append(queue, s)
 			}
-			if !HasBlizzardAtRound24(m, size, head.round, head.Coord) {
-				queue = append(queue, State24{Coord{head.x, head.y}, head.round})
+			if s, ok := TryMove24(m, size, head, D24_STAY); ok {
+				queue = append(queue, s)
 			}
 			continue
 		}
 		if head.y == size.y {
-			if !HasBlizzardAtRound24(m, size, head.round, head.Coord.Add(Coord{0, -1})) {
-				queue = append(queue, State24{Coord{head.x, head.y - 1}, head.round})
+			if s, ok := TryMove24(m, size, head, D24_UP); ok {
+				queue = append(queue, s)
 			}
-			if !HasBlizzardAtRound24(m, size, head.round, head.Coord) {
-				queue = append(queue, State24{Coord{head.x, head.y}, head.round})
+			if s, ok := TryMove24(m, size, head, D24_STAY); ok {
+				queue = append(queue, s)
 			}
 			continue
 		}
 
-		// move right
-		if head.x < size.x-1 && !HasBlizzardAtRound24(m, size, head.round, head.Coord.Add(Coord{1, 0})) {
-			queue = append(queue, State24{Coord{head.x + 1, head.y}, head.round})
+		if head.x < size.x-1 {
+			if s, ok := TryMove24(m, size, head, D24_RIGHT); ok {
+				queue = append(queue, s)
+			}
 		}
-		// move down
-		if head.y < size.y-1 && !HasBlizzardAtRound24(m, size, head.round, head.Coord.Add(Coord{0, 1})) {
-			queue = append(queue, State24{Coord{head.x, head.y + 1}, head.round})
+		if head.y < size.y-1 {
+			if s, ok := TryMove24(m, size, head, D24_DOWN); ok {
+				queue = append(queue, s)
+			}
 		}
-		// move left
-		if head.x > 0 && !HasBlizzardAtRound24(m, size, head.round, head.Coord.Add(Coord{-1, 0})) {
-			queue = append(queue, State24{Coord{head.x - 1, head.y}, head.round})
+		if head.x > 0 {
+			if s, ok := TryMove24(m, size, head, D24_LEFT); ok {
+				queue = append(queue, s)
+			}
 		}
-		// move up
-		if head.y > 0 && !HasBlizzardAtRound24(m, size, head.round, head.Coord.Add(Coord{0, -1})) {
-			queue = append(queue, State24{Coord{head.x, head.y - 1}, head.round})
+		if head.y > 0 {
+			if s, ok := TryMove24(m, size, head, D24_UP); ok {
+				queue = append(queue, s)
+			}
 		}
-		// stay
-		if !HasBlizzardAtRound24(m, size, head.round, head.Coord) {
-			queue = append(queue, State24{Coord{head.x, head.y}, head.round})
+		if s, ok := TryMove24(m, size, head, D24_STAY); ok {
+			queue = append(queue, s)
 		}
 	}
 }
