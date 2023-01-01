@@ -7,8 +7,8 @@ import (
 )
 
 func init() {
-	RegisterSolution("23-1", Solution23_1)
-	// RegisterSolution("23-2", Solution23_2)
+	RegisterSolution("23-1", func(r io.Reader) { Solution23(r, 1) })
+	RegisterSolution("23-2", func(r io.Reader) { Solution23(r, 2) })
 }
 
 func DirectionOk23(e map[Coord]bool, c Coord) [4]bool {
@@ -67,7 +67,7 @@ func PrintMap23(e map[Coord]bool) {
 
 var directions23 = []Coord{{0, -1}, {0, 1}, {-1, 0}, {1, 0}}
 
-func Solution23_1(r io.Reader) {
+func Solution23(r io.Reader, mode int) {
 	e := make(map[Coord]bool)
 	scanner := bufio.NewScanner(r)
 
@@ -81,7 +81,12 @@ func Solution23_1(r io.Reader) {
 		y++
 	}
 
-	for round := 0; round < 10; round++ {
+	for round := 0; ; round++ {
+		if mode == 1 && round == 10 {
+			break
+		}
+		hasMoved := false
+
 		proposal := make(map[Coord]int, len(e))
 		for c := range e {
 			oks := DirectionOk23(e, c)
@@ -102,6 +107,7 @@ func Solution23_1(r io.Reader) {
 				if oks[(i+round)%4] {
 					newPos := c.Add(directions23[(i+round)%4])
 					if proposal[newPos] == 1 {
+						hasMoved = true
 						newE[newPos] = true
 					} else {
 						newE[c] = true
@@ -114,9 +120,16 @@ func Solution23_1(r io.Reader) {
 			}
 		}
 		e = newE
+
+		if mode == 2 && !hasMoved {
+			fmt.Println(round + 1)
+			break
+		}
 	}
 
-	top, bottom, left, right := MapBounds23(e)
-	result := (bottom-top+1)*(right-left+1) - len(e)
-	fmt.Println(result)
+	if mode == 1 {
+		top, bottom, left, right := MapBounds23(e)
+		result := (bottom-top+1)*(right-left+1) - len(e)
+		fmt.Println(result)
+	}
 }
