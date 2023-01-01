@@ -9,6 +9,7 @@ import (
 	"runtime"
 	"sort"
 	"strings"
+	"time"
 )
 
 type SolutionFunc func(io.Reader)
@@ -44,14 +45,34 @@ func Usage() {
 	sort.Strings(solutions)
 
 	w := flag.CommandLine.Output()
-	fmt.Fprintf(w, "Usage: %s <solution> [input...]\n", os.Args[0])
-	fmt.Fprintf(w, "Available solutions:\n")
-	for _, name := range solutions {
-		fmt.Fprintf(w, "\t%s\n", name)
+	fmt.Fprintf(w, "Usage: %s [option...] <solution> [input...]\n", os.Args[0])
+	fmt.Fprintf(w, "\nAvailable options:\n")
+	flag.VisitAll(func(f *flag.Flag) {
+		fmt.Fprintf(w, "  -%s\t%s\n", f.Name, f.Usage) // f.Name, f.Value
+	})
+
+	const TARGET = 80
+
+	fmt.Fprintf(w, "\nAvailable solutions:\n")
+	printed, _ := fmt.Fprintf(w, "  %s", solutions[0])
+	for i := 1; i < len(solutions); i++ {
+		name := solutions[i]
+		if printed+len(name)+1 > TARGET {
+			printed, _ = fmt.Fprintf(w, ",\n  %s", name)
+			printed -= 2
+		} else {
+			n, _ := fmt.Fprintf(w, ", %s", name)
+			printed += n
+		}
 	}
+	fmt.Fprintln(w)
 }
 
+var fShowPerformance bool
+
 func main() {
+	flag.Usage = Usage
+	flag.BoolVar(&fShowPerformance, "p", false, "show performance information")
 	flag.Parse()
 	if flag.NArg() < 1 {
 		Usage()
@@ -79,5 +100,11 @@ func main() {
 		rs = append(rs, os.Stdin)
 	}
 
+	startTime := time.Now()
 	fn(io.MultiReader(rs...))
+	duration := time.Since(startTime)
+
+	if fShowPerformance {
+		fmt.Fprintf(os.Stderr, "\nDuration: %s\n", duration)
+	}
 }
