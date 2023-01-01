@@ -1,6 +1,9 @@
 package main
 
-import "strconv"
+import (
+	"fmt"
+	"strconv"
+)
 
 type Coord struct {
 	x, y int
@@ -48,4 +51,16 @@ func Max[T int](x T, xs ...T) T {
 		}
 	}
 	return x
+}
+
+func FormatSize(sizeInt int64) string {
+	size := float64(sizeInt)
+	units := []string{"B", "KiB", "MiB", "GiB"}
+	for _, unit := range units {
+		if size < 1000 {
+			return fmt.Sprintf("%.1f %s", size, unit)
+		}
+		size /= 1024
+	}
+	return fmt.Sprintf("%.1f %s", size, "TiB")
 }

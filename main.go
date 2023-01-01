@@ -9,7 +9,6 @@ import (
 	"runtime"
 	"sort"
 	"strings"
-	"time"
 )
 
 type SolutionFunc func(io.Reader)
@@ -100,11 +99,13 @@ func main() {
 		rs = append(rs, os.Stdin)
 	}
 
-	startTime := time.Now()
+	pState := GetPerformanceState()
 	fn(io.MultiReader(rs...))
-	duration := time.Since(startTime)
+	pInfo := DiffPerformanceState(pState)
 
 	if fShowPerformance {
-		fmt.Fprintf(os.Stderr, "\nDuration: %s\n", duration)
+		w := os.Stderr
+		fmt.Fprintln(w)
+		PrintPerformanceInfo(w, pInfo)
 	}
 }
