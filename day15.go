@@ -18,12 +18,13 @@ const (
 	M15_BEACON
 )
 
+type Flag15 struct {
+	mode, x int
+}
+
 func Solution15_1(r io.Reader) {
-	type Flag struct {
-		mode, x int
-	}
 	beacons := make(map[string]bool)
-	flags := make([]Flag, 0, 100)
+	flags := make([]Flag15, 0, 100)
 
 	targetY := 2000000
 
@@ -42,12 +43,12 @@ func Solution15_1(r io.Reader) {
 			if by == targetY && bx == start {
 				start++
 			}
-			flags = append(flags, Flag{M15_START, start})
+			flags = append(flags, Flag15{M15_START, start})
 			end := sx + diff
 			if by == targetY && bx == end {
 				end--
 			}
-			flags = append(flags, Flag{M15_END, end + 1})
+			flags = append(flags, Flag15{M15_END, end + 1})
 		}
 	}
 

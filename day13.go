@@ -20,7 +20,7 @@ const (
 	C13_RIGHT
 )
 
-func CompareSingle13_1(left_i, right_i any) int {
+func CompareSingle13(left_i, right_i any) int {
 	left_f, l_ok := left_i.(float64)
 	right_f, r_ok := right_i.(float64)
 	if l_ok && r_ok {
@@ -35,10 +35,10 @@ func CompareSingle13_1(left_i, right_i any) int {
 	}
 
 	if l_ok && !r_ok {
-		return CompareSingle13_1([]any{left_i}, right_i)
+		return CompareSingle13([]any{left_i}, right_i)
 	}
 	if !l_ok && r_ok {
-		return CompareSingle13_1(left_i, []any{right_i})
+		return CompareSingle13(left_i, []any{right_i})
 	}
 
 	left_l, l_ok := left_i.([]any)
@@ -50,7 +50,7 @@ func CompareSingle13_1(left_i, right_i any) int {
 		if i >= len(right_l) {
 			return C13_LEFT
 		}
-		res := CompareSingle13_1(left_l[i], right_l[i])
+		res := CompareSingle13(left_l[i], right_l[i])
 		if res != C13_EQUAL {
 			return res
 		}
@@ -61,14 +61,14 @@ func CompareSingle13_1(left_i, right_i any) int {
 	return C13_RIGHT
 }
 
-func Parse13_1(s string) any {
+func Parse13(s string) any {
 	var res any
 	json.Unmarshal([]byte(s), &res)
 	return res
 }
 
-func Compare13_1(left, right string) bool {
-	return CompareSingle13_1(Parse13_1(left), Parse13_1(right)) == C13_RIGHT
+func Compare13(left, right string) bool {
+	return CompareSingle13(Parse13(left), Parse13(right)) == C13_RIGHT
 }
 
 func Solution13_1(r io.Reader) {
@@ -81,7 +81,7 @@ func Solution13_1(r io.Reader) {
 		scanner.Scan()
 		right := scanner.Text()
 		scanner.Scan()
-		if Compare13_1(left, right) {
+		if Compare13(left, right) {
 			total += n
 		}
 	}
@@ -90,25 +90,25 @@ func Solution13_1(r io.Reader) {
 
 func Solution13_2(r io.Reader) {
 	scanner := bufio.NewScanner(r)
-	p1 := Parse13_1("[[2]]")
-	p2 := Parse13_1("[[6]]")
+	p1 := Parse13("[[2]]")
+	p2 := Parse13("[[6]]")
 	packets := []any{p1, p2}
 	for scanner.Scan() {
 		s := scanner.Text()
 		if strings.TrimSpace(s) == "" {
 			continue
 		}
-		packets = append(packets, Parse13_1(s))
+		packets = append(packets, Parse13(s))
 	}
 	sort.Slice(packets, func(i, j int) bool {
-		return CompareSingle13_1(packets[i], packets[j]) == C13_RIGHT
+		return CompareSingle13(packets[i], packets[j]) == C13_RIGHT
 	})
 	res := 1
 	for i := 0; i < len(packets); i++ {
-		if CompareSingle13_1(packets[i], p1) == C13_EQUAL {
+		if CompareSingle13(packets[i], p1) == C13_EQUAL {
 			res *= i + 1
 		}
-		if CompareSingle13_1(packets[i], p2) == C13_EQUAL {
+		if CompareSingle13(packets[i], p2) == C13_EQUAL {
 			res *= i + 1
 		}
 	}

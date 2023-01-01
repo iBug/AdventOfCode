@@ -14,6 +14,16 @@ func init() {
 	RegisterSolution("11-2", func(r io.Reader) { Solution11(r, 2, 10000) })
 }
 
+type Monkey11 struct {
+	items []int
+	op    byte
+	opVal int // special value -1 = square
+	div   int
+	ifT   int
+	ifF   int
+	count int
+}
+
 func Gcd(a, b int) int {
 	for b != 0 {
 		a, b = b, a%b
@@ -26,16 +36,7 @@ func Lcm(a, b int) int {
 }
 
 func Solution11(r io.Reader, mode, roundsN int) {
-	type Monkey struct {
-		items []int
-		op    byte
-		opVal int // special value -1 = square
-		div   int
-		ifT   int
-		ifF   int
-		count int
-	}
-	m := make([]Monkey, 0, 8)
+	m := make([]Monkey11, 0, 8)
 	n := 0
 
 	scanner := bufio.NewScanner(r)
@@ -43,7 +44,7 @@ func Solution11(r io.Reader, mode, roundsN int) {
 		parts := strings.SplitN(strings.TrimSpace(scanner.Text()), ": ", 2)
 		if strings.HasPrefix(parts[0], "Monkey ") {
 			n = len(m)
-			m = append(m, Monkey{})
+			m = append(m, Monkey11{})
 			continue
 		}
 

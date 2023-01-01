@@ -15,11 +15,11 @@ func init() {
 	RegisterSolution("7-2", Solution7)
 }
 
-type Inode struct {
+type Inode7 struct {
 	mode     byte
 	size     int
-	parent   *Inode
-	children map[string]*Inode
+	parent   *Inode7
+	children map[string]*Inode7
 }
 
 const (
@@ -27,7 +27,7 @@ const (
 	M_DIR
 )
 
-func DirSizeRecurse_7(dir *Inode) int {
+func DirSizeRecurse7(dir *Inode7) int {
 	if dir.size > 0 {
 		return dir.size
 	}
@@ -37,29 +37,29 @@ func DirSizeRecurse_7(dir *Inode) int {
 		if inode.mode == M_FILE {
 			total += inode.size
 		} else {
-			total += DirSizeRecurse_7(inode)
+			total += DirSizeRecurse7(inode)
 		}
 	}
 	dir.size = total
 	return total
 }
 
-func RecurseTotalSize_7(dir *Inode, thresh int) int {
+func RecurseTotalSize7(dir *Inode7, thresh int) int {
 	total := 0
 	for _, inode := range dir.children {
 		if inode.mode == M_FILE {
 			continue
 		}
-		size := DirSizeRecurse_7(inode)
+		size := DirSizeRecurse7(inode)
 		if size <= thresh {
 			total += size
 		}
-		total += RecurseTotalSize_7(inode, thresh)
+		total += RecurseTotalSize7(inode, thresh)
 	}
 	return total
 }
 
-func RecurseMinimumSize_7(dir *Inode, thresh int) int {
+func RecurseMinimumSize7(dir *Inode7, thresh int) int {
 	total := math.MaxInt
 	if dir.size >= thresh && dir.size < total {
 		total = dir.size
@@ -69,7 +69,7 @@ func RecurseMinimumSize_7(dir *Inode, thresh int) int {
 		if inode.mode == M_FILE {
 			continue
 		}
-		size := RecurseMinimumSize_7(inode, thresh)
+		size := RecurseMinimumSize7(inode, thresh)
 		if size >= thresh && size < total {
 			total = size
 		}
@@ -78,7 +78,7 @@ func RecurseMinimumSize_7(dir *Inode, thresh int) int {
 }
 
 func Solution7(r io.Reader) {
-	root := Inode{mode: M_DIR, children: make(map[string]*Inode, 0)}
+	root := Inode7{mode: M_DIR, children: make(map[string]*Inode7, 0)}
 	cwd := &root
 	root.parent = &root
 
@@ -97,18 +97,18 @@ func Solution7(r io.Reader) {
 				}
 			}
 		case "dir":
-			cwd.children[f[1]] = &Inode{mode: M_DIR, parent: cwd, children: make(map[string]*Inode, 0)}
+			cwd.children[f[1]] = &Inode7{mode: M_DIR, parent: cwd, children: make(map[string]*Inode7, 0)}
 		default:
 			size, _ := strconv.Atoi(f[0])
-			cwd.children[f[1]] = &Inode{mode: M_FILE, parent: cwd, size: size}
+			cwd.children[f[1]] = &Inode7{mode: M_FILE, parent: cwd, size: size}
 		}
 	}
 
 	thresh := 100000
-	fmt.Println(RecurseTotalSize_7(&root, thresh))
+	fmt.Println(RecurseTotalSize7(&root, thresh))
 
 	fs_total := 70000000
 	fs_required := 30000000
-	fs_needs := fs_required - (fs_total - DirSizeRecurse_7(&root))
-	fmt.Println(RecurseMinimumSize_7(&root, fs_needs))
+	fs_needs := fs_required - (fs_total - DirSizeRecurse7(&root))
+	fmt.Println(RecurseMinimumSize7(&root, fs_needs))
 }

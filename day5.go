@@ -9,8 +9,8 @@ import (
 )
 
 func init() {
-	RegisterSolution("5-1", func(r io.Reader) { Solution5(r, Move5_1) })
-	RegisterSolution("5-2", func(r io.Reader) { Solution5(r, Move5_2) })
+	RegisterSolution("5-1", func(r io.Reader) { Solution5(r, 1) })
+	RegisterSolution("5-2", func(r io.Reader) { Solution5(r, 2) })
 }
 
 func Move5_1(stacks [][]byte, count, from, to int) {
@@ -25,7 +25,12 @@ func Move5_2(stacks [][]byte, count, from, to int) {
 	stacks[from] = stacks[from][:len(stacks[from])-count]
 }
 
-func Solution5(r io.Reader, moveFunc func([][]byte, int, int, int)) {
+func Solution5(r io.Reader, mode int) {
+	moveFunc := Move5_1
+	if mode == 2 {
+		moveFunc = Move5_2
+	}
+
 	scanner := bufio.NewScanner(r)
 	stacks_s := make([]string, 0)
 	n := 0
