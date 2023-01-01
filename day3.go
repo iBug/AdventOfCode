@@ -11,7 +11,7 @@ func init() {
 	RegisterSolution("3-2", Solution3_2)
 }
 
-func Day3_priority(c byte) int {
+func Priority3(c byte) int {
 	if c <= 'Z' {
 		return int(26 + c - 'A')
 	} else {
@@ -28,10 +28,10 @@ outer:
 		b := make([]bool, 52)
 		mid := len(s) / 2
 		for i := 0; i < mid; i++ {
-			b[Day3_priority(s[i])] = true
+			b[Priority3(s[i])] = true
 		}
 		for i := mid; i < len(s); i++ {
-			prio := Day3_priority(s[i])
+			prio := Priority3(s[i])
 			if b[prio] {
 				total += 1 + prio
 				continue outer
@@ -48,16 +48,16 @@ outer:
 	for scanner.Scan() {
 		b := make([]byte, 52)
 		for _, c := range scanner.Text() {
-			b[Day3_priority(byte(c))] = 1
+			b[Priority3(byte(c))] = 1
 		}
 		scanner.Scan()
 		for _, c := range scanner.Text() {
-			b[Day3_priority(byte(c))] |= 2
+			b[Priority3(byte(c))] |= 2
 		}
 		scanner.Scan()
 		for _, c := range scanner.Text() {
-			if b[Day3_priority(byte(c))] == 3 {
-				total += 1 + Day3_priority(byte(c))
+			if b[Priority3(byte(c))] == 3 {
+				total += 1 + Priority3(byte(c))
 				continue outer
 			}
 		}
