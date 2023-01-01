@@ -7,8 +7,9 @@ import (
 )
 
 func init() {
-	RegisterSolution("24-1", Solution24_1)
-	// RegisterSolution("24-2", Solution24_2)
+	RegisterSolution("24", Solution24)
+	RegisterSolution("24-1", Solution24)
+	RegisterSolution("24-2", Solution24)
 }
 
 const (
@@ -48,7 +49,7 @@ func HasBlizzardAtRound24(m [][]int, size Coord, round int, c Coord) bool {
 	return false
 }
 
-func Solution24_1(r io.Reader) {
+func Solution24(r io.Reader) {
 	scanner := bufio.NewScanner(r)
 	m := make([][]int, 0)
 	size := Coord{}
@@ -80,6 +81,7 @@ func Solution24_1(r io.Reader) {
 
 	queue := []State24{{Coord{0, -1}, 0}}
 	seen := make(map[State24]bool)
+	stage := 0
 	for len(queue) > 0 {
 		head := queue[0]
 		queue = queue[1:]
@@ -90,16 +92,44 @@ func Solution24_1(r io.Reader) {
 		head.round++
 
 		if head.x == size.x-1 && head.y == size.y-1 {
-			fmt.Println(head.round)
-			break
+			if stage == 0 {
+				fmt.Println(head.round)
+				stage++
+				// reset data, start moving back
+				queue = []State24{{Coord{size.x - 1, size.y}, head.round}}
+				seen = make(map[State24]bool)
+				continue
+			}
+			if stage == 2 {
+				fmt.Println(head.round)
+				break
+			}
+		}
+		if head.x == 0 && head.y == 0 {
+			if stage == 1 {
+				stage++
+				// reset data, start moving forward again
+				queue = []State24{{Coord{0, -1}, head.round}}
+				seen = make(map[State24]bool)
+				continue
+			}
 		}
 
 		if head.y < 0 {
+			if !HasBlizzardAtRound24(m, size, head.round, head.Coord.Add(Coord{0, 1})) {
+				queue = append(queue, State24{Coord{head.x, head.y + 1}, head.round})
+			}
 			if !HasBlizzardAtRound24(m, size, head.round, head.Coord) {
 				queue = append(queue, State24{Coord{head.x, head.y}, head.round})
 			}
-			if !HasBlizzardAtRound24(m, size, head.round, head.Coord.Add(Coord{0, 1})) {
-				queue = append(queue, State24{Coord{head.x, head.y + 1}, head.round})
+			continue
+		}
+		if head.y == size.y {
+			if !HasBlizzardAtRound24(m, size, head.round, head.Coord.Add(Coord{0, -1})) {
+				queue = append(queue, State24{Coord{head.x, head.y - 1}, head.round})
+			}
+			if !HasBlizzardAtRound24(m, size, head.round, head.Coord) {
+				queue = append(queue, State24{Coord{head.x, head.y}, head.round})
 			}
 			continue
 		}
