@@ -43,7 +43,7 @@
 22-1: Time: 883µs, Memory: 2.1 MiB
 22-2: Time: 1.724ms, Memory: 2.1 MiB
 23-1: Time: 14.031ms, Memory: 3.9 MiB
-23-2: Time: 1.821339s, Memory: 6.7 MiB
+23-2: Time: 1.167643s, Memory: 6.4 MiB
 24-1: Time: 191.196ms, Memory: 24.4 MiB
 24-2: Time: 153.77ms, Memory: 25.4 MiB
 25-1: Time: 50µs, Memory: 1.3 MiB

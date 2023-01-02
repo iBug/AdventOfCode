@@ -7,6 +7,7 @@ import (
 	"io"
 	"os"
 	"path"
+	"runtime/pprof"
 	"strings"
 
 	_ "adventofcode/2021"
@@ -56,9 +57,7 @@ func Usage() {
 		"If no input file is given, attempts to search for an appropriate one.\n"+
 		"If input file is -, reads from stdin.\n", os.Args[0], common.DefaultPrefix)
 	fmt.Fprintf(w, "\nAvailable options:\n")
-	flag.VisitAll(func(f *flag.Flag) {
-		fmt.Fprintf(w, "  -%s\t%s\n", f.Name, f.Usage)
-	})
+	flag.PrintDefaults()
 	fmt.Fprintln(w)
 
 	PrintYears(w)
@@ -96,9 +95,13 @@ func FindInputFile(prefix, name string) string {
 }
 
 func main() {
-	var fShowPerformance bool
+	var (
+		fShowPerformance bool
+		fPprofFile       string
+	)
 	flag.Usage = Usage
 	flag.BoolVar(&fShowPerformance, "p", false, "show performance information")
+	flag.StringVar(&fPprofFile, "P", "", "output CPU profiling information")
 	flag.Parse()
 	if flag.NArg() < 1 {
 		flag.Usage()
@@ -154,9 +157,21 @@ func main() {
 		}
 	}
 
+	if fPprofFile != "" {
+		f, err := os.Create(fPprofFile)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Cannot create %s: %v\n", fPprofFile, err)
+			os.Exit(1)
+		}
+		defer f.Close()
+		pprof.StartCPUProfile(f)
+	}
 	pState := GetPerformanceState()
 	fn(r)
 	pInfo := DiffPerformanceState(pState)
+	if fPprofFile != "" {
+		pprof.StopCPUProfile()
+	}
 
 	if fShowPerformance {
 		w := os.Stderr

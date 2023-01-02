@@ -11,7 +11,7 @@ func init() {
 	RegisterSolution("23-2", func(r io.Reader) { Solution23(r, 2) })
 }
 
-func DirectionOk23(e map[Coord]bool, c Coord) [4]bool {
+func DirectionOk23(e map[Coord]int, c Coord) [4]bool {
 	_, ok1 := e[Coord{c.x - 1, c.y - 1}]
 	_, ok2 := e[Coord{c.x + 0, c.y - 1}]
 	_, ok3 := e[Coord{c.x + 1, c.y - 1}]
@@ -30,7 +30,7 @@ func DirectionOk23(e map[Coord]bool, c Coord) [4]bool {
 	return [4]bool{northOk, southOk, westOk, eastOk}
 }
 
-func MapBounds23(e map[Coord]bool) (top, bottom, left, right int) {
+func MapBounds23(e map[Coord]int) (top, bottom, left, right int) {
 	const LARGENUM = 999999
 	top, bottom, left, right = LARGENUM, -LARGENUM, LARGENUM, -LARGENUM
 	for c := range e {
@@ -50,12 +50,12 @@ func MapBounds23(e map[Coord]bool) (top, bottom, left, right int) {
 	return
 }
 
-func PrintMap23(e map[Coord]bool) {
+func PrintMap23(e map[Coord]int) {
 	top, bottom, left, right := MapBounds23(e)
 	fmt.Printf("(%d,%d):\n", left, top)
 	for y := top; y <= bottom; y++ {
 		for x := left; x <= right; x++ {
-			if e[Coord{x, y}] {
+			if _, ok := e[Coord{x, y}]; ok {
 				fmt.Print("#")
 			} else {
 				fmt.Print(".")
@@ -68,14 +68,14 @@ func PrintMap23(e map[Coord]bool) {
 var directions23 = []Coord{{0, -1}, {0, 1}, {-1, 0}, {1, 0}}
 
 func Solution23(r io.Reader, mode int) {
-	e := make(map[Coord]bool)
+	e := make(map[Coord]int)
 	scanner := bufio.NewScanner(r)
 
 	y := 0
 	for scanner.Scan() {
 		for x, s := range scanner.Text() {
 			if s == '#' {
-				e[Coord{x, y}] = true
+				e[Coord{x, y}] = 0
 			}
 		}
 		y++
@@ -90,33 +90,33 @@ func Solution23(r io.Reader, mode int) {
 		proposal := make(map[Coord]int, len(e))
 		for c := range e {
 			oks := DirectionOk23(e, c)
-			for i := 0; i < 4; i++ {
-				if oks[(i+round)%4] {
-					newPos := c.Add(directions23[(i+round)%4])
-					proposal[newPos]++
-					break
-				}
-			}
-		}
-
-		newE := make(map[Coord]bool, len(e))
-		for c := range e {
-			oks := DirectionOk23(e, c)
 			i := 0
 			for i = 0; i < 4; i++ {
 				if oks[(i+round)%4] {
 					newPos := c.Add(directions23[(i+round)%4])
-					if proposal[newPos] == 1 {
-						hasMoved = true
-						newE[newPos] = true
-					} else {
-						newE[c] = true
-					}
+					proposal[newPos]++
+					e[c] = i
 					break
 				}
 			}
 			if i == 4 {
-				newE[c] = true
+				e[c] = -1
+			}
+		}
+
+		newE := make(map[Coord]int, len(e))
+		for c := range e {
+			i := e[c]
+			if i < 0 {
+				newE[c] = 0
+				continue
+			}
+			newPos := c.Add(directions23[(i+round)%4])
+			if proposal[newPos] == 1 {
+				hasMoved = true
+				newE[newPos] = 0
+			} else {
+				newE[c] = 0
 			}
 		}
 		e = newE
