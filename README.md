@@ -7,7 +7,7 @@ My solutions for [Advent Of Code](https://adventofcode.com/) challenges.
 - Written in Go
 - Standard library only
 - All solutions are compiled into a single binary
-- All solutions take reasonable time and memory usage ([performance record](records.txt))
+- All solutions take reasonable time and memory usage ([performance record for 2022](2022/records.txt))
 - Built-in execution time measurement, though memory tracking is only supported on Linux
 
 ## Usage
