@@ -115,6 +115,8 @@ func Recurse19(minutes int, bp Blueprint19, count Resource19, bots Resource19) i
 		result := count.geode + bots.geode*3
 		if count.canBuildGeodeBot(bp) {
 			result += 2
+			count.ore -= bp.geode
+			count.obsidian -= bp.geode2
 		}
 		if count.Add(bots).canBuildGeodeBot(bp) {
 			result += 1
