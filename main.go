@@ -9,6 +9,7 @@ import (
 	"path"
 	"strings"
 
+	_ "adventofcode/2021"
 	_ "adventofcode/2022"
 )
 
