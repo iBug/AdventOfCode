@@ -29,7 +29,7 @@
 15-1: Time: 177µs, Memory: 1.3 MiB
 15-2: Time: 600µs, Memory: 1.9 MiB
 16-1: Time: 75.515ms, Memory: 6.8 MiB
-16-2: Time: 2.313273s, Memory: 10.9 MiB
+16-2: Time: 150.883ms, Memory: 4.6 MiB
 17-1: Time: 856µs, Memory: 2.6 MiB
 17-2: Time: 5.035ms, Memory: 6.1 MiB
 18-1: Time: 3.724ms, Memory: 2.3 MiB

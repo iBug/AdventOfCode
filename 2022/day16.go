@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"sort"
 	"strings"
 )
 
@@ -40,9 +39,9 @@ func Recurse16_1(v map[string]Valve16, d map[string]int, node string, time int, 
 	return thisValue + maxNext
 }
 
-func Recurse16_2(v map[string]Valve16, d map[string]int, node string, time, value int, remaining, visited []string, resultMap map[string]int) {
+func Recurse16_2(v map[string]Valve16, d map[string]int, node string, time, value int, remaining []string, nameMap map[string]uint64, visited uint64, resultMap map[uint64]int) {
 	value += v[node].flow * time
-	visited = append(visited, node)
+	visited |= nameMap[node]
 
 	next := make([]string, 0, 16)
 	for _, c := range remaining {
@@ -55,14 +54,11 @@ func Recurse16_2(v map[string]Valve16, d map[string]int, node string, time, valu
 		newNext = append(newNext, next[:i]...)
 		newNext = append(newNext, next[i+1:]...)
 
-		Recurse16_2(v, d, c, time-d[node+c], value, newNext, visited, resultMap)
+		Recurse16_2(v, d, c, time-d[node+c], value, newNext, nameMap, visited, resultMap)
 	}
 
-	visited2 := make([]string, len(visited))
-	copy(visited2, visited)
-	sort.Strings(visited2)
-	if resultMap[strings.Join(visited2, ",")] < value {
-		resultMap[strings.Join(visited2, ",")] = value
+	if resultMap[visited] < value {
+		resultMap[visited] = value
 	}
 }
 
@@ -115,16 +111,18 @@ func Solution16(r io.Reader, mode int) {
 	if mode == 1 {
 		fmt.Println(Recurse16_1(v, d, "AA", 30, allValves))
 	} else if mode == 2 {
-		m := make(map[string]int)
-		Recurse16_2(v, d, "AA", 26, 0, allValves, make([]string, 0, 16), m)
+		nameMap := make(map[string]uint64)
+		for i, name := range allValves {
+			nameMap[name] = 1 << uint64(i)
+		}
+		m := make(map[uint64]int)
+		Recurse16_2(v, d, "AA", 26, 0, allValves, nameMap, 0, m)
 		max := 0
 		for res1 := range m {
 		res2:
 			for res2 := range m {
-				for _, part := range strings.Split(res1, ",") {
-					if part != "AA" && strings.Contains(res2, part) {
-						continue res2
-					}
+				if res1&res2 != 0 {
+					continue res2
 				}
 				if m[res1]+m[res2] > max {
 					max = m[res1] + m[res2]
