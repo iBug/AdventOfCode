@@ -76,21 +76,25 @@ func IsTerminal(f *os.File) bool {
 func FindInputFile(prefix, name string) string {
 	name = common.NormalizeName(name)
 	name = strings.SplitN(name, "-", 2)[0]
-	candidates := make([]string, 0, 12)
-	for _, dir := range []string{"inputs", "input", ""} {
-		for _, ext := range []string{".txt", ".in"} {
-			candidates = append(candidates, path.Join(dir, "input-"+name+ext))
-			candidates = append(candidates, path.Join(dir, name+ext))
+	for _, dir1 := range []string{"inputs", "input", ""} {
+		for _, dir := range []string{
+			path.Join(prefix, dir1),
+			path.Join(dir1, prefix),
+			dir1,
+		} {
+			for _, c := range []string{
+				path.Join(dir, "input-"+name+".txt"),
+				path.Join(dir, "day"+name, "input.txt"),
+				path.Join(dir, "input-"+name),
+				path.Join(dir, name+".txt"),
+			} {
+				if _, err := os.Stat(c); err == nil {
+					return c
+				}
+			}
 		}
-		candidates = append(candidates, path.Join(dir, "day"+name, "input.txt"))
-		candidates = append(candidates, path.Join(dir, "input-"+name))
 	}
 
-	for _, c := range candidates {
-		if _, err := os.Stat(c); err == nil {
-			return c
-		}
-	}
 	return ""
 }
 
