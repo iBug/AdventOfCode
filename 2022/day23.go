@@ -67,6 +67,11 @@ func PrintMap23(e map[Coord]int) {
 
 var directions23 = []Coord{{0, -1}, {0, 1}, {-1, 0}, {1, 0}}
 
+type Propose19 struct {
+	Coord
+	dir int
+}
+
 func Solution23(r io.Reader, mode int) {
 	e := make(map[Coord]int)
 	scanner := bufio.NewScanner(r)
@@ -88,6 +93,7 @@ func Solution23(r io.Reader, mode int) {
 		hasMoved := false
 
 		proposal := make(map[Coord]int, len(e))
+		proposed := make([]Propose19, 0, len(e))
 		for c := range e {
 			oks := DirectionOk23(e, c)
 			i := 0
@@ -95,31 +101,21 @@ func Solution23(r io.Reader, mode int) {
 				if oks[(i+round)%4] {
 					newPos := c.Add(directions23[(i+round)%4])
 					proposal[newPos]++
-					e[c] = i
+					proposed = append(proposed, Propose19{c, i})
 					break
 				}
 			}
-			if i == 4 {
-				e[c] = -1
-			}
 		}
 
-		newE := make(map[Coord]int, len(e))
-		for c := range e {
-			i := e[c]
-			if i < 0 {
-				newE[c] = 0
-				continue
-			}
+		for _, p := range proposed {
+			c, i := p.Coord, p.dir
 			newPos := c.Add(directions23[(i+round)%4])
 			if proposal[newPos] == 1 {
 				hasMoved = true
-				newE[newPos] = 0
-			} else {
-				newE[c] = 0
+				e[newPos] = 0
+				delete(e, c)
 			}
 		}
-		e = newE
 
 		if mode == 2 && !hasMoved {
 			fmt.Println(round + 1)
