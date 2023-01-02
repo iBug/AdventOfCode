@@ -100,21 +100,30 @@ func TimeToNextGeodeBot19(bp Blueprint19, count Resource19, bots Resource19) int
 }
 
 func Recurse19(minutes int, bp Blueprint19, count Resource19, bots Resource19) int {
-	if minutes == 0 {
+	switch minutes {
+	case 0:
 		return count.geode
-	}
-	if minutes == 1 {
+	case 1:
 		return count.geode + bots.geode
-	}
-	if minutes == 2 {
+	case 2:
 		result := count.geode + bots.geode*2
 		if count.canBuildGeodeBot(bp) {
+			result += 1
+		}
+		return result
+	case 3:
+		result := count.geode + bots.geode*3
+		if count.canBuildGeodeBot(bp) {
+			result += 2
+		}
+		if count.Add(bots).canBuildGeodeBot(bp) {
 			result += 1
 		}
 		return result
 	}
 
 	maxGeodeCount := count.geode + bots.geode*minutes
+	minutes--
 	timeNeeded := 0
 
 	// Next bot is geode bot
@@ -127,7 +136,7 @@ func Recurse19(minutes int, bp Blueprint19, count Resource19, bots Resource19) i
 		newCount.ore -= bp.geode
 		newCount.obsidian -= bp.geode2
 
-		newResult := Recurse19(minutes-timeNeeded-1, bp, newCount.Add(bots), bots.Add(Resource19{0, 0, 0, 1}))
+		newResult := Recurse19(minutes-timeNeeded, bp, newCount.Add(bots), bots.Add(Resource19{0, 0, 0, 1}))
 		if newResult > maxGeodeCount {
 			maxGeodeCount = newResult
 		}
@@ -143,7 +152,7 @@ func Recurse19(minutes int, bp Blueprint19, count Resource19, bots Resource19) i
 		newCount.ore -= bp.obsidian
 		newCount.clay -= bp.obsidian2
 
-		newResult := Recurse19(minutes-timeNeeded-1, bp, newCount.Add(bots), bots.Add(Resource19{0, 0, 1, 0}))
+		newResult := Recurse19(minutes-timeNeeded, bp, newCount.Add(bots), bots.Add(Resource19{0, 0, 1, 0}))
 		if newResult > maxGeodeCount {
 			maxGeodeCount = newResult
 		}
@@ -158,7 +167,7 @@ func Recurse19(minutes int, bp Blueprint19, count Resource19, bots Resource19) i
 		}
 		newCount.ore -= bp.clay
 
-		newResult := Recurse19(minutes-timeNeeded-1, bp, newCount.Add(bots), bots.Add(Resource19{0, 1, 0, 0}))
+		newResult := Recurse19(minutes-timeNeeded, bp, newCount.Add(bots), bots.Add(Resource19{0, 1, 0, 0}))
 		if newResult > maxGeodeCount {
 			maxGeodeCount = newResult
 		}
@@ -173,7 +182,7 @@ func Recurse19(minutes int, bp Blueprint19, count Resource19, bots Resource19) i
 		}
 		newCount.ore -= bp.ore
 
-		newResult := Recurse19(minutes-timeNeeded-1, bp, newCount.Add(bots), bots.Add(Resource19{1, 0, 0, 0}))
+		newResult := Recurse19(minutes-timeNeeded, bp, newCount.Add(bots), bots.Add(Resource19{1, 0, 0, 0}))
 		if newResult > maxGeodeCount {
 			maxGeodeCount = newResult
 		}

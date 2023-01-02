@@ -34,8 +34,8 @@
 17-2: Time: 5.035ms, Memory: 6.1 MiB
 18-1: Time: 3.724ms, Memory: 2.3 MiB
 18-2: Time: 10.272ms, Memory: 4.6 MiB
-19-1: Time: 16.591ms, Memory: 1.9 MiB
-19-2: Time: 462.916ms, Memory: 1.9 MiB
+19-1: Time: 8.111ms, Memory: 1.6 MiB
+19-2: Time: 170.865ms, Memory: 1.6 MiB
 20-1: Time: 21.66ms, Memory: 1.9 MiB
 20-2: Time: 344.576ms, Memory: 2.2 MiB
 21-1: Time: 1.471ms, Memory: 2.8 MiB
