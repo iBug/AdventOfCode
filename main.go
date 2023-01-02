@@ -12,25 +12,11 @@ import (
 	_ "adventofcode/2022"
 )
 
-func Usage() {
-	w := flag.CommandLine.Output()
-	fmt.Fprintf(w, "Usage: %s [option...] <solution> [input]\n\n", os.Args[0])
-	fmt.Fprint(w, "Run the specified solution.\n"+
-		"If no input file is given, attempts to search for an appropriate one.\n"+
-		"If input file is -, reads from stdin.\n")
-	fmt.Fprintf(w, "\nAvailable options:\n")
-	flag.VisitAll(func(f *flag.Flag) {
-		fmt.Fprintf(w, "  -%s\t%s\n", f.Name, f.Usage)
-	})
-
-	const TARGET = 80
-
-	fmt.Fprintf(w, "\nAvailable solutions:\n")
-	solutions := common.ListSolutions()
-	printed, _ := fmt.Fprintf(w, "  %s", solutions[0])
-	for i := 1; i < len(solutions); i++ {
-		name := solutions[i]
-		if printed+len(name)+1 > TARGET {
+func PrintListAutoWrap(w io.Writer, width int, list []string) {
+	printed, _ := fmt.Fprintf(w, "  %s", list[0])
+	for i := 1; i < len(list); i++ {
+		name := list[i]
+		if printed+len(name)+1 > width {
 			printed, _ = fmt.Fprintf(w, ",\n  %s", name)
 			printed -= 2
 		} else {
@@ -41,6 +27,44 @@ func Usage() {
 	fmt.Fprintln(w)
 }
 
+const TERM_WIDTH = 80
+
+func PrintYears(w io.Writer) {
+	fmt.Fprint(w, "Available years:\n")
+	PrintListAutoWrap(w, TERM_WIDTH, common.ListPrefixes())
+}
+
+func PrintSolutions(w io.Writer, prefix string) {
+	solutions := common.ListSolutions(prefix)
+	if len(solutions) == 0 {
+		fmt.Fprintf(w, "No solutions for %s.\n", prefix)
+		return
+	}
+	fmt.Fprintf(w, "Available solutions for %s:\n", prefix)
+	PrintListAutoWrap(w, TERM_WIDTH, solutions)
+}
+
+func Usage() {
+	w := flag.CommandLine.Output()
+	fmt.Fprintf(w, "Usage: %[1]s [option...] [year/]<solution> [input]\n\n"+
+		"Run the specified solution from the specified year.\n"+
+		"If no year is given, defaults to %[2]s.\n"+
+		"To list available solutions for a given year, omit the solution part.\n"+
+		"  Example: %[1]s %[2]s/\n"+
+		"\n"+
+		"If no input file is given, attempts to search for an appropriate one.\n"+
+		"If input file is -, reads from stdin.\n", os.Args[0], common.DefaultPrefix)
+	fmt.Fprintf(w, "\nAvailable options:\n")
+	flag.VisitAll(func(f *flag.Flag) {
+		fmt.Fprintf(w, "  -%s\t%s\n", f.Name, f.Usage)
+	})
+	fmt.Fprintln(w)
+
+	PrintYears(w)
+	fmt.Fprintln(w)
+	PrintSolutions(w, common.DefaultPrefix)
+}
+
 func IsTerminal(f *os.File) bool {
 	fi, err := f.Stat()
 	if err != nil {
@@ -49,7 +73,7 @@ func IsTerminal(f *os.File) bool {
 	return fi.Mode()&os.ModeCharDevice != 0
 }
 
-func FindInputFile(name string) string {
+func FindInputFile(prefix, name string) string {
 	name = common.NormalizeName(name)
 	name = strings.SplitN(name, "-", 2)[0]
 	candidates := make([]string, 0, 12)
@@ -80,19 +104,30 @@ func main() {
 		os.Exit(1)
 	}
 
-	solution := flag.Arg(0)
-	fn, ok := common.GetSolution(solution)
+	prefix, solution, ok := common.SplitSolutionPrefix(flag.Arg(0))
 	if !ok {
 		flag.Usage()
-		fmt.Fprintf(os.Stderr, "\nUnknown solution: %s\n", solution)
+		fmt.Fprintf(os.Stderr, "\nInvalid solution: %s\n", flag.Arg(0))
+		os.Exit(1)
+	}
+
+	if solution == "" {
+		PrintSolutions(os.Stdout, prefix)
+		os.Exit(0)
+	}
+
+	fn, ok := common.GetSolution(prefix, solution)
+	if !ok {
+		flag.Usage()
+		fmt.Fprintf(os.Stderr, "\nUnknown solution: %s\n", flag.Arg(0))
 		os.Exit(1)
 	}
 
 	var r io.Reader
 	if flag.NArg() == 1 {
-		path := FindInputFile(solution)
+		path := FindInputFile(prefix, solution)
 		if path == "" {
-			fmt.Fprintf(os.Stderr, "Cannot find input file for %s\n", solution)
+			fmt.Fprintf(os.Stderr, "Cannot find input file for %s\n", flag.Arg(0))
 			os.Exit(1)
 		}
 		fmt.Fprintf(os.Stderr, "Found input file: %s\n", path)
