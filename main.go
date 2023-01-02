@@ -1,49 +1,18 @@
 package main
 
 import (
+	"adventofcode/common"
 	"flag"
 	"fmt"
 	"io"
 	"os"
 	"path"
-	"reflect"
-	"runtime"
-	"sort"
 	"strings"
+
+	_ "adventofcode/2022"
 )
 
-type SolutionFunc func(io.Reader)
-
-var registry = make(map[string]SolutionFunc)
-
-func NormalizeName(name string) string {
-	name = strings.ToLower(name)
-	for _, c := range []string{" ", ".", "_"} {
-		name = strings.ReplaceAll(name, c, "-")
-	}
-	return name
-}
-
-func GetFunctionName(i interface{}) string {
-	// https://stackoverflow.com/a/7053871/5958455
-	return runtime.FuncForPC(reflect.ValueOf(i).Pointer()).Name()
-}
-
-func RegisterSolution(name string, f SolutionFunc) {
-	name = NormalizeName(name)
-	if f, ok := registry[name]; ok {
-		panic(fmt.Sprintf("Solution %s already registered as %s", name, GetFunctionName(f)))
-	}
-	registry[name] = f
-}
-
 func Usage() {
-	solutions := make([]string, 0, len(registry))
-	for name := range registry {
-		solutions = append(solutions, name)
-	}
-	sort.Strings(solutions)
-
 	w := flag.CommandLine.Output()
 	fmt.Fprintf(w, "Usage: %s [option...] <solution> [input]\n\n", os.Args[0])
 	fmt.Fprint(w, "Run the specified solution.\n"+
@@ -51,12 +20,13 @@ func Usage() {
 		"If input file is -, reads from stdin.\n")
 	fmt.Fprintf(w, "\nAvailable options:\n")
 	flag.VisitAll(func(f *flag.Flag) {
-		fmt.Fprintf(w, "  -%s\t%s\n", f.Name, f.Usage) // f.Name, f.Value
+		fmt.Fprintf(w, "  -%s\t%s\n", f.Name, f.Usage)
 	})
 
 	const TARGET = 80
 
 	fmt.Fprintf(w, "\nAvailable solutions:\n")
+	solutions := common.ListSolutions()
 	printed, _ := fmt.Fprintf(w, "  %s", solutions[0])
 	for i := 1; i < len(solutions); i++ {
 		name := solutions[i]
@@ -80,6 +50,7 @@ func IsTerminal(f *os.File) bool {
 }
 
 func FindInputFile(name string) string {
+	name = common.NormalizeName(name)
 	name = strings.SplitN(name, "-", 2)[0]
 	candidates := make([]string, 0, 12)
 	for _, dir := range []string{"inputs", "input", ""} {
@@ -109,8 +80,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	solution := NormalizeName(flag.Arg(0))
-	fn, ok := registry[solution]
+	solution := flag.Arg(0)
+	fn, ok := common.GetSolution(solution)
 	if !ok {
 		flag.Usage()
 		fmt.Fprintf(os.Stderr, "\nUnknown solution: %s\n", solution)
