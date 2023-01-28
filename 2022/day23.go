@@ -7,8 +7,8 @@ import (
 )
 
 func init() {
-	RegisterSolution("23-1", func(r io.Reader) { Solution23(r, 1) })
-	RegisterSolution("23-2", func(r io.Reader) { Solution23(r, 2) })
+	RegisterSolution("23-1", func(r io.Reader, w io.Writer) { Solution23(r, w, 1) })
+	RegisterSolution("23-2", func(r io.Reader, w io.Writer) { Solution23(r, w, 2) })
 }
 
 func DirectionOk23(e map[Coord]int, c Coord) [4]bool {
@@ -72,7 +72,7 @@ type Propose19 struct {
 	dir int
 }
 
-func Solution23(r io.Reader, mode int) {
+func Solution23(r io.Reader, w io.Writer, mode int) {
 	e := make(map[Coord]int)
 	scanner := bufio.NewScanner(r)
 
@@ -118,7 +118,7 @@ func Solution23(r io.Reader, mode int) {
 		}
 
 		if mode == 2 && !hasMoved {
-			fmt.Println(round + 1)
+			fmt.Fprintln(w, round+1)
 			break
 		}
 	}
@@ -126,6 +126,6 @@ func Solution23(r io.Reader, mode int) {
 	if mode == 1 {
 		top, bottom, left, right := MapBounds23(e)
 		result := (bottom-top+1)*(right-left+1) - len(e)
-		fmt.Println(result)
+		fmt.Fprintln(w, result)
 	}
 }

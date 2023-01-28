@@ -11,7 +11,7 @@ func init() {
 	RegisterSolution("2-2", Solution2_2)
 }
 
-func Solution2_1(r io.Reader) {
+func Solution2_1(r io.Reader, w io.Writer) {
 	scanner := bufio.NewScanner(r)
 	total := 0
 	for scanner.Scan() {
@@ -19,10 +19,10 @@ func Solution2_1(r io.Reader) {
 		total += int(s[2] - 'W')
 		total += (4 + int(s[2]-'X') - int(s[0]-'A')) % 3 * 3
 	}
-	fmt.Println(total)
+	fmt.Fprintln(w, total)
 }
 
-func Solution2_2(r io.Reader) {
+func Solution2_2(r io.Reader, w io.Writer) {
 	scanner := bufio.NewScanner(r)
 	total := 0
 	for scanner.Scan() {
@@ -30,5 +30,5 @@ func Solution2_2(r io.Reader) {
 		total += 1 + (int(s[0]-'A')+int(s[2]-'X')+2)%3
 		total += int(s[2]-'X') * 3
 	}
-	fmt.Println(total)
+	fmt.Fprintln(w, total)
 }

@@ -206,7 +206,7 @@ func ParseBlueprint19(line string) (blueprintId int, bp Blueprint19) {
 	return
 }
 
-func Solution19_1(r io.Reader) {
+func Solution19_1(r io.Reader, w io.Writer) {
 	scanner := bufio.NewScanner(r)
 	total := 0
 	for scanner.Scan() {
@@ -215,10 +215,10 @@ func Solution19_1(r io.Reader) {
 		// fmt.Printf("Blueprint %d %v: %d\n", blueprintId, bp, result)
 		total += blueprintId * result
 	}
-	fmt.Println(total)
+	fmt.Fprintln(w, total)
 }
 
-func Solution19_2(r io.Reader) {
+func Solution19_2(r io.Reader, w io.Writer) {
 	scanner := bufio.NewScanner(r)
 	total := 1
 	for scanner.Scan() {
@@ -230,5 +230,5 @@ func Solution19_2(r io.Reader) {
 			break
 		}
 	}
-	fmt.Println(total)
+	fmt.Fprintln(w, total)
 }

@@ -77,7 +77,7 @@ func RecurseMinimumSize7(dir *Inode7, thresh int) int {
 	return total
 }
 
-func Solution7(r io.Reader) {
+func Solution7(r io.Reader, w io.Writer) {
 	root := Inode7{mode: M_DIR, children: make(map[string]*Inode7, 0)}
 	cwd := &root
 	root.parent = &root
@@ -105,10 +105,10 @@ func Solution7(r io.Reader) {
 	}
 
 	thresh := 100000
-	fmt.Println(RecurseTotalSize7(&root, thresh))
+	fmt.Fprintln(w, RecurseTotalSize7(&root, thresh))
 
 	fs_total := 70000000
 	fs_required := 30000000
 	fs_needs := fs_required - (fs_total - DirSizeRecurse7(&root))
-	fmt.Println(RecurseMinimumSize7(&root, fs_needs))
+	fmt.Fprintln(w, RecurseMinimumSize7(&root, fs_needs))
 }

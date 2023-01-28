@@ -64,7 +64,7 @@ func TryMove24(m [][]int, size Coord, s State24, c Coord) (State24, bool) {
 	return s, false
 }
 
-func Solution24(r io.Reader) {
+func Solution24(r io.Reader, w io.Writer) {
 	scanner := bufio.NewScanner(r)
 	m := make([][]int, 0)
 	size := Coord{}
@@ -108,7 +108,7 @@ func Solution24(r io.Reader) {
 
 		if head.x == size.x-1 && head.y == size.y-1 {
 			if stage == 0 {
-				fmt.Println(head.round)
+				fmt.Fprintln(w, head.round)
 				stage++
 				// reset data, start moving back
 				queue = []State24{{Coord{size.x - 1, size.y}, head.round}}
@@ -116,7 +116,7 @@ func Solution24(r io.Reader) {
 				continue
 			}
 			if stage == 2 {
-				fmt.Println(head.round)
+				fmt.Fprintln(w, head.round)
 				break
 			}
 		}

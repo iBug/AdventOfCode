@@ -7,8 +7,8 @@ import (
 )
 
 func init() {
-	RegisterSolution("17-1", func(r io.Reader) { Solution17(r, 1) })
-	RegisterSolution("17-2", func(r io.Reader) { Solution17(r, 2) })
+	RegisterSolution("17-1", func(r io.Reader, w io.Writer) { Solution17(r, w, 1) })
+	RegisterSolution("17-2", func(r io.Reader, w io.Writer) { Solution17(r, w, 2) })
 }
 
 type Rock17 struct {
@@ -29,7 +29,7 @@ var rocks17 = []Rock17{
 	{w: 2, h: 2, s: []Coord{{0, 0}, {1, 0}, {0, 1}, {1, 1}}},
 }
 
-func Solution17(r io.Reader, mode int) {
+func Solution17(r io.Reader, w io.Writer, mode int) {
 	scanner := bufio.NewScanner(r)
 	scanner.Scan()
 	jets := make([]int, len(scanner.Text()))
@@ -52,7 +52,7 @@ func Solution17(r io.Reader, mode int) {
 
 	for n := 0; ; n++ {
 		if mode == 1 && n >= 2022 {
-			fmt.Println(top + 1)
+			fmt.Fprintln(w, top+1)
 			break
 		} else if mode == 2 {
 			if n%sampleInterval == 0 {
@@ -139,7 +139,7 @@ func Solution17(r io.Reader, mode int) {
 				if rem == 0 {
 					rem = interval
 				}
-				fmt.Println(tops[rem] + (target/interval)*diff)
+				fmt.Fprintln(w, tops[rem]+(target/interval)*diff)
 				break
 			}
 		}

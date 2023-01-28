@@ -8,8 +8,8 @@ import (
 )
 
 func init() {
-	RegisterSolution("14-1", func(r io.Reader) { Solution14(r, 1) })
-	RegisterSolution("14-2", func(r io.Reader) { Solution14(r, 2) })
+	RegisterSolution("14-1", func(r io.Reader, w io.Writer) { Solution14(r, w, 1) })
+	RegisterSolution("14-2", func(r io.Reader, w io.Writer) { Solution14(r, w, 2) })
 }
 
 const (
@@ -18,7 +18,7 @@ const (
 	E14_SAND
 )
 
-func Solution14(r io.Reader, mode int) {
+func Solution14(r io.Reader, w io.Writer, mode int) {
 	m := make(map[string]int)
 	maxY := 0
 
@@ -94,5 +94,5 @@ outer:
 		}
 		count++
 	}
-	fmt.Println(count)
+	fmt.Fprintln(w, count)
 }

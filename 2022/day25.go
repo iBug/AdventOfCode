@@ -72,11 +72,11 @@ func ToSnafu25(n int64) string {
 	return string(s)
 }
 
-func Solution25(r io.Reader) {
+func Solution25(r io.Reader, w io.Writer) {
 	scanner := bufio.NewScanner(r)
 	total := int64(0)
 	for scanner.Scan() {
 		total += ParseSnafu25(scanner.Text())
 	}
-	fmt.Println(total, ToSnafu25(total))
+	fmt.Fprintln(w, total, ToSnafu25(total))
 }

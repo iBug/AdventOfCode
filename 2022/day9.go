@@ -10,11 +10,11 @@ import (
 
 func init() {
 	RegisterSolution("9-1", Solution9_1)
-	RegisterSolution("9-1a", func(r io.Reader) { Solution9(r, 2) })
-	RegisterSolution("9-2", func(r io.Reader) { Solution9(r, 10) })
+	RegisterSolution("9-1a", func(r io.Reader, w io.Writer) { Solution9(r, w, 2) })
+	RegisterSolution("9-2", func(r io.Reader, w io.Writer) { Solution9(r, w, 10) })
 }
 
-func Solution9_1(r io.Reader) {
+func Solution9_1(r io.Reader, w io.Writer) {
 	scanner := bufio.NewScanner(r)
 	hx, hy, tx, ty := 0, 0, 0, 0
 	visited := make(map[string]int)
@@ -54,7 +54,7 @@ func Solution9_1(r io.Reader) {
 			visited[fmt.Sprintf("%d,%d", tx, ty)]++
 		}
 	}
-	fmt.Println(len(visited))
+	fmt.Fprintln(w, len(visited))
 }
 
 func Move9(x1, y1, x2, y2 int) (int, int) {
@@ -93,7 +93,7 @@ func Move9(x1, y1, x2, y2 int) (int, int) {
 	return x2, y2
 }
 
-func Solution9(r io.Reader, size int) {
+func Solution9(r io.Reader, w io.Writer, size int) {
 	scanner := bufio.NewScanner(r)
 	x, y := make([]int, size), make([]int, size)
 	visited := make(map[string]int)
@@ -126,5 +126,5 @@ func Solution9(r io.Reader, size int) {
 			visited[fmt.Sprintf("%d,%d", x[size-1], y[size-1])]++
 		}
 	}
-	fmt.Println(len(visited))
+	fmt.Fprintln(w, len(visited))
 }

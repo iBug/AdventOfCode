@@ -82,12 +82,13 @@ func FindInputFile(prefix, name string) string {
 			path.Join(dir1, prefix),
 			dir1,
 		} {
-			for _, c := range []string{
-				path.Join(dir, "input-"+name+".txt"),
-				path.Join(dir, "day"+name, "input.txt"),
-				path.Join(dir, "input-"+name),
-				path.Join(dir, name+".txt"),
+			for _, fn := range []string{
+				"input-" + name + ".txt",
+				"day" + name, "input.txt",
+				"input-" + name,
+				name + ".txt",
 			} {
+				c := path.Join(dir, fn)
 				if _, err := os.Stat(c); err == nil {
 					return c
 				}
@@ -171,7 +172,7 @@ func main() {
 		pprof.StartCPUProfile(f)
 	}
 	pState := GetPerformanceState()
-	fn(r)
+	fn(r, os.Stdout)
 	pInfo := DiffPerformanceState(pState)
 	if fPprofFile != "" {
 		pprof.StopCPUProfile()

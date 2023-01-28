@@ -13,7 +13,7 @@ func init() {
 
 var Adjacent18 = []Coord3{{1, 0, 0}, {-1, 0, 0}, {0, 1, 0}, {0, -1, 0}, {0, 0, 1}, {0, 0, -1}}
 
-func Solution18_1(r io.Reader) {
+func Solution18_1(r io.Reader, w io.Writer) {
 	scanner := bufio.NewScanner(r)
 	m := make(map[string]bool)
 	total := 0
@@ -28,7 +28,7 @@ func Solution18_1(r io.Reader) {
 			}
 		}
 	}
-	fmt.Println(total)
+	fmt.Fprintln(w, total)
 }
 
 func InCubeRange18(c, min, max Coord3) bool {
@@ -37,7 +37,7 @@ func InCubeRange18(c, min, max Coord3) bool {
 		c.z >= min.z && c.z <= max.z
 }
 
-func Solution18_2(r io.Reader) {
+func Solution18_2(r io.Reader, w io.Writer) {
 	scanner := bufio.NewScanner(r)
 	m := make(map[string]int, 8192)
 	min, max := Coord3{999, 999, 999}, Coord3{-999, -999, -999}
@@ -95,5 +95,5 @@ func Solution18_2(r io.Reader) {
 	ySize := max.y - min.y + 1
 	zSize := max.z - min.z + 1
 	total -= 2 * (xSize*ySize + xSize*zSize + ySize*zSize)
-	fmt.Println(total)
+	fmt.Fprintln(w, total)
 }

@@ -71,7 +71,7 @@ func Compare13(left, right string) bool {
 	return CompareSingle13(Parse13(left), Parse13(right)) == C13_RIGHT
 }
 
-func Solution13_1(r io.Reader) {
+func Solution13_1(r io.Reader, w io.Writer) {
 	scanner := bufio.NewScanner(r)
 	total := 0
 	n := 0
@@ -85,10 +85,10 @@ func Solution13_1(r io.Reader) {
 			total += n
 		}
 	}
-	fmt.Println(total)
+	fmt.Fprintln(w, total)
 }
 
-func Solution13_2(r io.Reader) {
+func Solution13_2(r io.Reader, w io.Writer) {
 	scanner := bufio.NewScanner(r)
 	p1 := Parse13("[[2]]")
 	p2 := Parse13("[[6]]")
@@ -112,5 +112,5 @@ func Solution13_2(r io.Reader) {
 			res *= i + 1
 		}
 	}
-	fmt.Println(res)
+	fmt.Fprintln(w, res)
 }

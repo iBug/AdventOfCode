@@ -13,7 +13,7 @@ func init() {
 	RegisterSolution("2-2", Solution2_2)
 }
 
-func Solution2_1(r io.Reader) {
+func Solution2_1(r io.Reader, w io.Writer) {
 	scanner := bufio.NewScanner(r)
 	x, y := 0, 0
 	for scanner.Scan() {
@@ -28,10 +28,10 @@ func Solution2_1(r io.Reader) {
 			y -= n
 		}
 	}
-	fmt.Println(x * y)
+	fmt.Fprintln(w, x*y)
 }
 
-func Solution2_2(r io.Reader) {
+func Solution2_2(r io.Reader, w io.Writer) {
 	scanner := bufio.NewScanner(r)
 	x, y, aim := 0, 0, 0
 	for scanner.Scan() {
@@ -47,5 +47,5 @@ func Solution2_2(r io.Reader) {
 			aim -= n
 		}
 	}
-	fmt.Println(x * y)
+	fmt.Fprintln(w, x*y)
 }

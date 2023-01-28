@@ -22,7 +22,7 @@ type Flag15 struct {
 	mode, x int
 }
 
-func Solution15_1(r io.Reader) {
+func Solution15_1(r io.Reader, w io.Writer) {
 	beacons := make(map[string]bool)
 	flags := make([]Flag15, 0, 100)
 
@@ -79,7 +79,7 @@ func Solution15_1(r io.Reader) {
 			}
 		}
 	}
-	fmt.Println(total)
+	fmt.Fprintln(w, total)
 }
 
 type Line15 struct {
@@ -101,7 +101,7 @@ func LineIntersect15(l1, l2 Line15) (Coord, bool) {
 	return Coord{x, y}, true
 }
 
-func Solution15_2(r io.Reader) {
+func Solution15_2(r io.Reader, w io.Writer) {
 	type Sensor struct {
 		Coord
 		r int // range or radius
@@ -149,5 +149,5 @@ func Solution15_2(r io.Reader) {
 		}
 	}
 	fmt.Sscanf(maxK, "%d,%d", &x, &y)
-	fmt.Println(maxK, 4000000*int64(x)+int64(y))
+	fmt.Fprintln(w, maxK, 4000000*int64(x)+int64(y))
 }

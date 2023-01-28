@@ -7,11 +7,11 @@ import (
 )
 
 func init() {
-	RegisterSolution("6-1", func(r io.Reader) { Solution6(r, 4) })
-	RegisterSolution("6-2", func(r io.Reader) { Solution6(r, 14) })
+	RegisterSolution("6-1", func(r io.Reader, w io.Writer) { Solution6(r, w, 4) })
+	RegisterSolution("6-2", func(r io.Reader, w io.Writer) { Solution6(r, w, 14) })
 }
 
-func Solution6(r io.Reader, thresh int) {
+func Solution6(r io.Reader, w io.Writer, thresh int) {
 	scanner := bufio.NewScanner(r)
 	scanner.Scan()
 	s := scanner.Text()
@@ -21,7 +21,7 @@ func Solution6(r io.Reader, thresh int) {
 	}
 	for i := thresh; i < len(s); i++ {
 		if len(b) == thresh {
-			fmt.Println(i)
+			fmt.Fprintln(w, i)
 			break
 		}
 		b[s[i]-'a']++

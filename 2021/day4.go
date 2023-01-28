@@ -9,11 +9,11 @@ import (
 )
 
 func init() {
-	RegisterSolution("4-1", func(r io.Reader) { Solution4(r, 1) })
-	RegisterSolution("4-2", func(r io.Reader) { Solution4(r, 2) })
+	RegisterSolution("4-1", func(r io.Reader, w io.Writer) { Solution4(r, w, 1) })
+	RegisterSolution("4-2", func(r io.Reader, w io.Writer) { Solution4(r, w, 2) })
 }
 
-func Solution4(r io.Reader, mode int) {
+func Solution4(r io.Reader, w io.Writer, mode int) {
 	scanner := bufio.NewScanner(r)
 	draws := make([]int, 0)
 	scanner.Scan()
@@ -70,7 +70,7 @@ func Solution4(r io.Reader, mode int) {
 									sum += n
 								}
 							}
-							fmt.Println(n * sum)
+							fmt.Fprintln(w, n*sum)
 							return
 						}
 					}

@@ -9,11 +9,11 @@ import (
 )
 
 func init() {
-	RegisterSolution("12-1", func(r io.Reader) { Solution12(r, 1) })
-	RegisterSolution("12-2", func(r io.Reader) { Solution12(r, 2) })
+	RegisterSolution("12-1", func(r io.Reader, w io.Writer) { Solution12(r, w, 1) })
+	RegisterSolution("12-2", func(r io.Reader, w io.Writer) { Solution12(r, w, 2) })
 }
 
-func Solution12(r io.Reader, mode int) {
+func Solution12(r io.Reader, w io.Writer, mode int) {
 	h := make([][]int, 0)
 	var s, e Coord
 	d := make([][]int, 0)
@@ -45,10 +45,10 @@ func Solution12(r io.Reader, mode int) {
 		dist := d[c.y][c.x]
 		q = q[1:]
 		if mode == 1 && c.Equal(s) {
-			fmt.Println(dist)
+			fmt.Fprintln(w, dist)
 			break
 		} else if mode == 2 && h[c.y][c.x] == 0 {
-			fmt.Println(dist)
+			fmt.Fprintln(w, dist)
 			break
 		}
 

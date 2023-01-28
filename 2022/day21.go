@@ -51,7 +51,7 @@ func Eval21(name string) float64 {
 	return v
 }
 
-func Solution21_1(r io.Reader) {
+func Solution21_1(r io.Reader, w io.Writer) {
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
 		f := strings.Fields(scanner.Text())
@@ -66,7 +66,7 @@ func Solution21_1(r io.Reader) {
 	fmt.Printf("%.0f\n", Eval21("root"))
 }
 
-func Solution21_2(r io.Reader) {
+func Solution21_2(r io.Reader, w io.Writer) {
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
 		f := strings.Fields(scanner.Text())

@@ -11,7 +11,7 @@ func init() {
 	RegisterSolution("8-2", Solution8_2)
 }
 
-func Solution8_1(r io.Reader) {
+func Solution8_1(r io.Reader, w io.Writer) {
 	scanner := bufio.NewScanner(r)
 	m := make([][]int, 0)
 	visible := make([][]bool, 0)
@@ -83,10 +83,10 @@ func Solution8_1(r io.Reader) {
 			}
 		}
 	}
-	fmt.Println(total)
+	fmt.Fprintln(w, total)
 }
 
-func Solution8_2(r io.Reader) {
+func Solution8_2(r io.Reader, w io.Writer) {
 	scanner := bufio.NewScanner(r)
 	m := make([][]int, 0)
 	for scanner.Scan() {
@@ -130,5 +130,5 @@ func Solution8_2(r io.Reader) {
 			}
 		}
 	}
-	fmt.Println(max)
+	fmt.Fprintln(w, max)
 }

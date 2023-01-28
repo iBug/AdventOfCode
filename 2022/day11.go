@@ -10,8 +10,8 @@ import (
 )
 
 func init() {
-	RegisterSolution("11-1", func(r io.Reader) { Solution11(r, 1, 20) })
-	RegisterSolution("11-2", func(r io.Reader) { Solution11(r, 2, 10000) })
+	RegisterSolution("11-1", func(r io.Reader, w io.Writer) { Solution11(r, w, 1, 20) })
+	RegisterSolution("11-2", func(r io.Reader, w io.Writer) { Solution11(r, w, 2, 10000) })
 }
 
 type Monkey11 struct {
@@ -35,7 +35,7 @@ func Lcm(a, b int) int {
 	return a * b / Gcd(a, b)
 }
 
-func Solution11(r io.Reader, mode, roundsN int) {
+func Solution11(r io.Reader, w io.Writer, mode, roundsN int) {
 	m := make([]Monkey11, 0, 8)
 	n := 0
 
@@ -118,5 +118,5 @@ func Solution11(r io.Reader, mode, roundsN int) {
 		counts[i] = m[i].count
 	}
 	sort.Ints(counts)
-	fmt.Println(counts[len(m)-2] * counts[len(m)-1])
+	fmt.Fprintln(w, counts[len(m)-2]*counts[len(m)-1])
 }

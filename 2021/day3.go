@@ -7,8 +7,8 @@ import (
 )
 
 func init() {
-	RegisterSolution("3-1", func(r io.Reader) { Solution3(r, 1) })
-	RegisterSolution("3-2", func(r io.Reader) { Solution3(r, 2) })
+	RegisterSolution("3-1", func(r io.Reader, w io.Writer) { Solution3(r, w, 1) })
+	RegisterSolution("3-2", func(r io.Reader, w io.Writer) { Solution3(r, w, 2) })
 }
 
 func AddOnes3(count []int, s string) {
@@ -30,7 +30,7 @@ func CountToInt3(count []int) int {
 	return result
 }
 
-func Solution3(r io.Reader, mode int) {
+func Solution3(r io.Reader, w io.Writer, mode int) {
 	scanner := bufio.NewScanner(r)
 
 	scanner.Scan()
@@ -52,7 +52,7 @@ func Solution3(r io.Reader, mode int) {
 		}
 		result := CountToInt3(count)
 		result *= (1<<len(count) - 1) ^ result
-		fmt.Println(result)
+		fmt.Fprintln(w, result)
 		return
 	}
 
@@ -94,5 +94,5 @@ func Solution3(r io.Reader, mode int) {
 
 	resultA := CountToInt3(countA)
 	resultB := CountToInt3(countB)
-	fmt.Println(resultA * resultB)
+	fmt.Fprintln(w, resultA*resultB)
 }

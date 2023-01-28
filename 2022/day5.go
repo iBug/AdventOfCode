@@ -9,8 +9,8 @@ import (
 )
 
 func init() {
-	RegisterSolution("5-1", func(r io.Reader) { Solution5(r, 1) })
-	RegisterSolution("5-2", func(r io.Reader) { Solution5(r, 2) })
+	RegisterSolution("5-1", func(r io.Reader, w io.Writer) { Solution5(r, w, 1) })
+	RegisterSolution("5-2", func(r io.Reader, w io.Writer) { Solution5(r, w, 2) })
 }
 
 func Move5_1(stacks [][]byte, count, from, to int) {
@@ -25,7 +25,7 @@ func Move5_2(stacks [][]byte, count, from, to int) {
 	stacks[from] = stacks[from][:len(stacks[from])-count]
 }
 
-func Solution5(r io.Reader, mode int) {
+func Solution5(r io.Reader, w io.Writer, mode int) {
 	moveFunc := Move5_1
 	if mode == 2 {
 		moveFunc = Move5_2
@@ -75,5 +75,5 @@ func Solution5(r io.Reader, mode int) {
 	for i := 0; i < n; i++ {
 		s += string(stacks[i][len(stacks[i])-1])
 	}
-	fmt.Println(s)
+	fmt.Fprintln(w, s)
 }

@@ -13,7 +13,7 @@ func init() {
 	RegisterSolution("10-2", Solution10_2)
 }
 
-func Solution10_1(r io.Reader) {
+func Solution10_1(r io.Reader, w io.Writer) {
 	scanner := bufio.NewScanner(r)
 	total := 0
 	tick := 0
@@ -40,10 +40,10 @@ func Solution10_1(r io.Reader) {
 			break
 		}
 	}
-	fmt.Println(total)
+	fmt.Fprintln(w, total)
 }
 
-func Solution10_2(r io.Reader) {
+func Solution10_2(r io.Reader, w io.Writer) {
 	scanner := bufio.NewScanner(r)
 	tick := 0
 	x := 1

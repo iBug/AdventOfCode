@@ -9,9 +9,9 @@ import (
 )
 
 func init() {
-	RegisterSolution("22-1", func(r io.Reader) { Solution22(r, 1) })
-	RegisterSolution("22-2", func(r io.Reader) { Solution22(r, 2) })
-	RegisterSolution("22-2e", func(r io.Reader) { Solution22(r, 3) })
+	RegisterSolution("22-1", func(r io.Reader, w io.Writer) { Solution22(r, w, 1) })
+	RegisterSolution("22-2", func(r io.Reader, w io.Writer) { Solution22(r, w, 2) })
+	RegisterSolution("22-2e", func(r io.Reader, w io.Writer) { Solution22(r, w, 3) })
 }
 
 const (
@@ -325,7 +325,7 @@ func PrintMap22(m [][]int, pos Coord, dir int) {
 	}
 }
 
-func Solution22(r io.Reader, mode int) {
+func Solution22(r io.Reader, w io.Writer, mode int) {
 	moveFunc := Move22_1
 	if mode == 2 {
 		moveFunc = Move22_2
@@ -354,5 +354,5 @@ func Solution22(r io.Reader, mode int) {
 	}
 
 	result := 1000*(pos.y+1) + 4*(pos.x+1) + dir
-	fmt.Println(result)
+	fmt.Fprintln(w, result)
 }

@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-type SolutionFunc func(io.Reader)
+type SolutionFunc func(io.Reader, io.Writer)
 
 var registry = make(map[string]map[string]SolutionFunc)
 var DefaultPrefix = ""

@@ -13,7 +13,7 @@ func init() {
 	RegisterSolution("1-2", Solution1_2)
 }
 
-func Solution1_1(r io.Reader) {
+func Solution1_1(r io.Reader, w io.Writer) {
 	s := bufio.NewScanner(r)
 	max := 0
 	now := 0
@@ -32,10 +32,10 @@ func Solution1_1(r io.Reader) {
 	if now > max {
 		max = now
 	}
-	fmt.Println(max)
+	fmt.Fprintln(w, max)
 }
 
-func Solution1_2(r io.Reader) {
+func Solution1_2(r io.Reader, w io.Writer) {
 	s := bufio.NewScanner(r)
 	max := []int{0, 0, 0, 0}
 	now := 0
@@ -52,5 +52,5 @@ func Solution1_2(r io.Reader) {
 	}
 	max[0] = now
 	sort.Ints(max)
-	fmt.Println(max[1] + max[2] + max[3])
+	fmt.Fprintln(w, max[1]+max[2]+max[3])
 }

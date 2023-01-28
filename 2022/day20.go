@@ -8,8 +8,8 @@ import (
 )
 
 func init() {
-	RegisterSolution("20-1", func(r io.Reader) { Solution20(r, 1) })
-	RegisterSolution("20-2", func(r io.Reader) { Solution20(r, 2) })
+	RegisterSolution("20-1", func(r io.Reader, w io.Writer) { Solution20(r, w, 1) })
+	RegisterSolution("20-2", func(r io.Reader, w io.Writer) { Solution20(r, w, 2) })
 }
 
 type Node20 struct {
@@ -64,7 +64,7 @@ func PrintList20(n *Node20, count int) {
 	fmt.Println("]")
 }
 
-func Solution20(r io.Reader, mode int) {
+func Solution20(r io.Reader, w io.Writer, mode int) {
 	mixTimes := 1
 	multiplyVBy := int64(1)
 	if mode == 2 {
@@ -105,5 +105,5 @@ func Solution20(r io.Reader, mode int) {
 	}
 
 	// PrintList20(n[0], len(n))
-	fmt.Println(total)
+	fmt.Fprintln(w, total)
 }

@@ -8,8 +8,8 @@ import (
 )
 
 func init() {
-	RegisterSolution("16-1", func(r io.Reader) { Solution16(r, 1) })
-	RegisterSolution("16-2", func(r io.Reader) { Solution16(r, 2) })
+	RegisterSolution("16-1", func(r io.Reader, w io.Writer) { Solution16(r, w, 1) })
+	RegisterSolution("16-2", func(r io.Reader, w io.Writer) { Solution16(r, w, 2) })
 }
 
 type Valve16 struct {
@@ -62,7 +62,7 @@ func Recurse16_2(v map[string]Valve16, d map[string]int, node string, time, valu
 	}
 }
 
-func Solution16(r io.Reader, mode int) {
+func Solution16(r io.Reader, w io.Writer, mode int) {
 	scanner := bufio.NewScanner(r)
 	v := make(map[string]Valve16)
 	for scanner.Scan() {
@@ -109,7 +109,7 @@ func Solution16(r io.Reader, mode int) {
 		}
 	}
 	if mode == 1 {
-		fmt.Println(Recurse16_1(v, d, "AA", 30, allValves))
+		fmt.Fprintln(w, Recurse16_1(v, d, "AA", 30, allValves))
 	} else if mode == 2 {
 		nameMap := make(map[string]uint64)
 		for i, name := range allValves {
@@ -134,6 +134,6 @@ func Solution16(r io.Reader, mode int) {
 				max = value
 			}
 		}
-		fmt.Println(max)
+		fmt.Fprintln(w, max)
 	}
 }

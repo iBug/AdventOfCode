@@ -36,14 +36,14 @@ func (c Coord3) String() string {
 	return strconv.Itoa(c.x) + "," + strconv.Itoa(c.y) + "," + strconv.Itoa(c.z)
 }
 
-func Abs[T int](x T) T {
+func Abs(x int) int {
 	if x < 0 {
 		return -x
 	}
 	return x
 }
 
-func Max[T int](x T, xs ...T) T {
+func Max(x int, xs ...int) int {
 	for _, y := range xs {
 		if y > x {
 			x = y

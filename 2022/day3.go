@@ -19,7 +19,7 @@ func Priority3(c byte) int {
 	}
 }
 
-func Solution3_1(r io.Reader) {
+func Solution3_1(r io.Reader, w io.Writer) {
 	scanner := bufio.NewScanner(r)
 	total := 0
 outer:
@@ -38,10 +38,10 @@ outer:
 			}
 		}
 	}
-	fmt.Println(total)
+	fmt.Fprintln(w, total)
 }
 
-func Solution3_2(r io.Reader) {
+func Solution3_2(r io.Reader, w io.Writer) {
 	scanner := bufio.NewScanner(r)
 	total := 0
 outer:
@@ -62,5 +62,5 @@ outer:
 			}
 		}
 	}
-	fmt.Println(total)
+	fmt.Fprintln(w, total)
 }
