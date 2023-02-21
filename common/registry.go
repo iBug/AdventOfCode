@@ -11,7 +11,26 @@ import (
 
 type SolutionFunc func(io.Reader, io.Writer)
 
-var registry = make(map[string]map[string]SolutionFunc)
+type Solution struct {
+	Func        SolutionFunc
+	Description string
+}
+
+func (s *Solution) SetDescription(desc string) *Solution {
+	s.Description = desc
+	return s
+}
+
+func (s *Solution) Run(r io.Reader, w io.Writer) (err error) {
+	defer func() {
+		err = recover().(error)
+	}()
+
+	s.Func(r, w)
+	return
+}
+
+var registry = make(map[string]map[string]Solution)
 var DefaultPrefix = ""
 
 func NormalizeName(name string) string {
@@ -43,7 +62,7 @@ func RegisterSolution(prefix, name string, f SolutionFunc) {
 	if f, ok := registry[prefix][name]; ok {
 		panic(fmt.Sprintf("Solution %s/%s already registered as %s", prefix, name, GetFunctionName(f)))
 	}
-	registry[prefix][name] = f
+	registry[prefix][name] = Solution{Func: f}
 }
 
 func GetPrefixRegistrar(prefix string) func(string, SolutionFunc) {
@@ -51,17 +70,17 @@ func GetPrefixRegistrar(prefix string) func(string, SolutionFunc) {
 		DefaultPrefix = prefix
 	}
 	if _, ok := registry[prefix]; !ok {
-		registry[prefix] = make(map[string]SolutionFunc)
+		registry[prefix] = make(map[string]Solution)
 	}
 	return func(name string, f SolutionFunc) {
 		RegisterSolution(prefix, name, f)
 	}
 }
 
-func GetSolution(prefix, name string) (SolutionFunc, bool) {
+func GetSolution(prefix, name string) (Solution, bool) {
 	name = NormalizeName(name)
-	f, ok := registry[prefix][name]
-	return f, ok
+	s, ok := registry[prefix][name]
+	return s, ok
 }
 
 func ListPrefixes() []string {

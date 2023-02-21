@@ -125,7 +125,7 @@ func main() {
 		os.Exit(0)
 	}
 
-	fn, ok := common.GetSolution(prefix, solution)
+	sol, ok := common.GetSolution(prefix, solution)
 	if !ok {
 		flag.Usage()
 		fmt.Fprintf(os.Stderr, "\nUnknown solution: %s\n", flag.Arg(0))
@@ -172,7 +172,7 @@ func main() {
 		pprof.StartCPUProfile(f)
 	}
 	pState := GetPerformanceState()
-	fn(r, os.Stdout)
+	sol.Run(r, os.Stdout)
 	pInfo := DiffPerformanceState(pState)
 	if fPprofFile != "" {
 		pprof.StopCPUProfile()
